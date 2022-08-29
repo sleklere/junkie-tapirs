@@ -53,7 +53,7 @@ body {
       rgba(0, 0, 0, 0.2),
       rgba(0, 0, 0, 0.25)
     ),
-    url("./Colorfull\ Pixel\ Colors\ Pixels\ Colorful\ Color\ Wash\ Pixel\ Wash\ Wallpaper.png");
+    url("./imgs/Colorfull\ Pixel\ Colors\ Pixels\ Colorful\ Color\ Wash\ Pixel\ Wash\ Wallpaper.png");
 }
 
 .header {
@@ -160,11 +160,4 @@ span {
 
 .tapirs {
   height: 20rem;
-}
-
-.tapir-1 {
-}
-.tapir-2 {
-}
-.tapir-3 {
 }
