@@ -48,6 +48,7 @@ html {
 /* /////////////////////// */
 
 body {
+  height: 100vh;
   background-image: linear-gradient(
       to right,
       rgba(0, 0, 0, 0.2),
@@ -58,17 +59,7 @@ body {
 
 .header {
   font-family: "Rubik", sans-serif;
-  /* height: 100vh; */
-  /* background-color: #212529; */
-  /* background-image: linear-gradient(
-    to left,
-    rgba(0, 255, 255, 0.48),
-    rgba(255, 0, 221, 0.458)
-  ); */
-  /* background-image: url("./Colorfull\ Pixel\ Colors\ Pixels\ Colorful\ Color\ Wash\ Pixel\ Wash\ Wallpaper.png"); */
-  /* background-size: cover; */
-  /* background-position: fixed; */
-
+  height: 15vh;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -76,11 +67,10 @@ body {
 }
 
 .main-title {
+  text-decoration: none;
   font-size: 4rem;
   font-weight: 400;
   font-family: "Silkscreen";
-  /* color: #5f3dc4; */
-  /* color: #fff; */
   color: #fcc419;
   text-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.246);
 }
@@ -97,8 +87,6 @@ body {
 
 .tw {
   cursor: pointer;
-  /* color: #5f3dc4; */
-  /* color: #fff; */
   color: #fcc419;
 }
 
@@ -107,51 +95,68 @@ body {
   width: 4.8rem;
 }
 
+/* ///////////////////////// */
+/* HERO SECTION */
+
 .section-hero {
-  height: 100vh;
-  /* background-image: linear-gradient(
-    to left,
-    rgba(0, 255, 255, 0.48),
-    rgba(255, 0, 221, 0.458)
-  ); */
-  /* background-image: url("./Colorfull\ Pixel\ Colors\ Pixels\ Colorful\ Color\ Wash\ Pixel\ Wash\ Wallpaper.png"); */
-  background-size: cover;
+  height: 85vh;
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
   flex-direction: column-reverse;
 }
 
+.logo {
+  width: 40vw;
+}
+
+.description-tapir--tap {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+}
+
 .hero-description {
-  /* font-family: "Rubik"; */
+  width: 50vw;
   font-family: "Silkscreen";
   font-size: 2rem;
-  /* color: #444; */
   color: #fff;
-  text-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.271);
-  margin: 10rem;
+  /* text-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.512); */
+  padding: 5rem 0 5rem 5rem;
 }
 
 span {
-  /* color: #7950f2; */
-  /* color: #c2255c; */
   color: #fcc419;
 }
 
-.logo {
-  width: 40vw;
-  margin-top: 20rem;
+.click-me {
+  font-family: "Silkscreen";
+  position: absolute;
+  color: rgb(89, 0, 255);
+  font-weight: 700;
+  font-size: 2.5rem;
+  top: 7%;
+  right: -25%;
+}
+
+.click-me-img {
+  height: 3rem;
+  position: absolute;
+  top: 20%;
+  right: 5%;
 }
 
 .banner {
   width: 100vw;
-  margin-bottom: 15rem;
 }
+
+/* TAPIRS CAMBIABLES */
 
 .section-tap {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .hidden {
@@ -159,5 +164,6 @@ span {
 }
 
 .tapirs {
-  height: 20rem;
+  height: 30rem;
+  padding: 3rem 5rem 5rem 0;
 }
