@@ -35,9 +35,9 @@
     width: 50rem;
   }
 
-  .section-hero {
+  /* .section-hero {
     justify-content: space-around;
-  }
+  } */
 
   .hero-description {
     font-size: 1.6rem;
@@ -91,7 +91,7 @@
 /* 470px */
 @media (max-width: 29.4rem) {
   .header {
-    padding: 1.5rem 3rem 0 3rem;
+    padding: 3rem 3rem 0 3rem;
   }
 
   .logo {
@@ -110,7 +110,7 @@
 /* 410px */
 @media (max-width: 25rem) {
   .header {
-    padding: 1.5rem 2rem 0 2rem;
+    padding: 3rem 2rem 0 2rem;
   }
 
   .logo {
@@ -128,12 +128,24 @@
     width: 32rem;
   }
 
-  .main-title {
-    font-size: 2.5rem;
+  .btn-connect-wallet {
+    font-size: 1.3rem;
   }
 
   .logo-tw {
     height: 3.5rem;
     width: 3.5rem;
+  }
+}
+
+/* 310px */
+@media (max-width: 19.4rem) {
+  .logo {
+    width: 30rem;
+  }
+
+  .click-me {
+    right: 5%;
+    font-size: 1.8rem;
   }
 }
