@@ -42,28 +42,29 @@ SPACING SYSTEM (px)
 html {
   font-size: 62.5%;
   overflow-x: hidden;
-  /* overflow-y: hidden; */
+  overflow-y: hidden;
 }
 
 /* /////////////////////// */
 
 body {
-  height: 100vh;
   background-image: linear-gradient(
       to right,
       rgba(0, 0, 0, 0.2),
       rgba(0, 0, 0, 0.25)
     ),
     url("./imgs/Colorfull\ Pixel\ Colors\ Pixels\ Colorful\ Color\ Wash\ Pixel\ Wash\ Wallpaper.png");
+  overflow-x: hidden;
+  background-size: cover;
 }
 
 .header {
   font-family: "Rubik", sans-serif;
-  height: 15vh;
+  height: 6.5vh;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 2rem 4.8rem;
+  padding: 1.5rem 4.8rem 0 4.8rem;
 }
 
 .main-title {
@@ -73,16 +74,6 @@ body {
   font-family: "Silkscreen";
   color: #fcc419;
   text-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.246);
-}
-
-.btn-connect-wallet {
-  padding: 1.25rem 1.5rem;
-  font-family: "Rubik", sans-serif;
-  font-size: 1.75rem;
-  font-weight: 500;
-  border: 0;
-  border-radius: 50px;
-  cursor: pointer;
 }
 
 .tw {
@@ -99,30 +90,32 @@ body {
 /* HERO SECTION */
 
 .section-hero {
-  height: 85vh;
+  height: 93.5vh;
   display: flex;
   align-items: center;
-  flex-direction: column-reverse;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 .logo {
-  width: 40vw;
+  width: 75rem;
+  padding-top: 2rem;
 }
 
-.description-tapir--tap {
+.container-descrip-tapir {
   display: flex;
-  width: 100vw;
+  /* width: 100vw; */
   justify-content: center;
   align-items: center;
 }
 
 .hero-description {
-  width: 50vw;
+  width: 40vw;
   font-family: "Silkscreen";
   font-size: 2rem;
   color: #fff;
   /* text-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.512); */
-  padding: 5rem 0 5rem 5rem;
+  /* padding: 5rem 0 5rem 5rem; */
 }
 
 span {
@@ -147,7 +140,8 @@ span {
 }
 
 .banner {
-  width: 100vw;
+  /* width: 100vw; */
+  width: 192rem;
 }
 
 /* TAPIRS CAMBIABLES */
@@ -159,11 +153,21 @@ span {
   position: relative;
 }
 
-.hidden {
-  display: none;
+.tapirs {
+  height: 28rem;
+  padding: 3rem 5rem 5rem 0;
 }
 
-.tapirs {
-  height: 30rem;
-  padding: 3rem 5rem 5rem 0;
+.btn-connect-wallet {
+  padding: 1.25rem 1.5rem;
+  font-family: "Rubik", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+}
+/* clases de ayuda */
+.hidden {
+  display: none;
 }
