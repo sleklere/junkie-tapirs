@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -39,12 +41,117 @@ body {
   text-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.246);
 }
 
+/* NAV */
+
+.main-nav-ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3rem;
+}
+
+/* //////////////// */
+/* SECTION MINT */
+/* //////////////// */
+
+.btn-mint {
+  background-color: #fcc419;
+  padding: 1.25rem 1.5rem;
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  border: 0;
+  border-radius: 50px;
+  width: 12rem;
+  cursor: pointer;
+}
+
+.btn-mint:hover,
+.btn-mint:active {
+  background-color: #ddaa14;
+}
+
+.mint-window {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  padding: 5rem;
+
+  background: linear-gradient(to bottom right, #fcc419, #f08c00);
+  /* background-color: #f76707; */
+  border-radius: 20px;
+
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 5rem;
+}
+
+.mint-title {
+  font-family: "Press Start 2P";
+  font-size: 4.5rem;
+  font-weight: 400;
+  color: #222;
+}
+
+.close-mint {
+  position: absolute;
+  top: 0;
+  right: 1.5rem;
+  font-size: 5rem;
+  color: #222;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+}
+
+.mint-price {
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 3rem;
+  color: #222;
+}
+
+.mint-description {
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 3rem;
+  color: #222;
+}
+
+.mint-quantity {
+  width: 6rem;
+  height: 6rem;
+  border: 3px solid;
+  background: rgb(228, 228, 228);
+  text-align: center;
+  font-size: 3rem;
+  font-family: "Press Start 2P", sans-serif;
+}
+
+/* ////////////////////// */
+
 /* Boton wallet */
 .btn-connect-wallet {
   background-color: #fcc31954;
   padding: 1.25rem 1.5rem;
-  font-family: "Silkscreen", sans-serif;
-  font-size: 1.5rem;
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 1.2rem;
   font-weight: 500;
   border: 0;
   border-radius: 50px;

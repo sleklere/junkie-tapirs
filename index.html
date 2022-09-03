@@ -30,46 +30,79 @@
   <body>
     <header class="header">
       <!-- <a href="https://twitter.com/JunkieTapirs" target="_blank" class="main-title"><span class="coming-soon">Junkie Tapirs</span></a href="#"> -->
-      <button class="btn-connect-wallet"><span class="coming-soon">Connect Wallet</span></button>
       <a href="https://twitter.com/JunkieTapirs" target="_blank" class="tw">
         <ion-icon class="logo-tw" name="logo-twitter"></ion-icon>
       </a>
+      <nav class="main-nav">
+        <ul class="main-nav-ul">
+          <li>
+            <button class="btn-mint">Mint!</button>
+          </li>
+          <li>
+            <button class="btn-connect-wallet">
+              <span class="coming-soon">Connect Wallet</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </header>
     <main>
       <section class="section-hero">
         <img class="logo" alt="Tapirs Logo Gif" src="./imgs/logo.gif" />
         <div class="container-descrip-tapir">
           <h2 class="hero-description">
-            <span class="text-tapirs">Junkie Tapirs</span> is a collection created to bring together
-            a community of people who, just like their creator, have a passion
-            for these prehistoric animals.
+            <span class="text-tapirs">Junkie Tapirs</span> is a collection
+            created to bring together a community of people who, just like their
+            creator, have a passion for these prehistoric animals.
           </h2>
           <section class="section-tap">
             <p class="click-me">Click me!</p>
-            <img src="./imgs/pngfind.com-drawn-arrow-png-34624.png" alt="pointer" class="click-me-img">
             <img
-            class="tapirs tapir-1"
+              src="./imgs/pngfind.com-drawn-arrow-png-34624.png"
+              alt="pointer"
+              class="click-me-img"
+            />
+            <img
+              class="tapirs tapir-1"
               alt="1st tapir"
               src="./imgs/Foto1.png"
-              />
-              <img
+            />
+            <img
               class="tapirs tapir-2 hidden"
               alt="1st tapir"
               src="./imgs/pixil.gif"
-              />
-              <img
+            />
+            <img
               class="tapirs tapir-3 hidden"
               alt="1st tapir"
               src="./imgs/Foto3.png"
-              />
-            </section>
-          </div>
-          <img
-            class="banner"
-            alt="Tapirs Collection Gif"
-            src="./imgs/Banner-gif.gif"
-          />
+            />
+          </section>
+        </div>
+        <img
+          class="banner"
+          alt="Tapirs Collection Gif"
+          src="./imgs/Banner-gif.gif"
+        />
       </section>
+      <div class="mint-window hidden">
+        <button class="close-mint">&times;</button>
+        <h1 class="mint-title">Mint your Tapir!</h1>
+        <p class="mint-description">Welcome to the mint section!</p>
+        <p class="mint-description no-wl hidden">
+          Sorry! You are not whitelisted!
+        </p>
+        <span class="mint-price">0.0</span>
+        <input
+          type="number"
+          min="0"
+          max="2"
+          value="0"
+          class="mint-quantity"
+          id="mint-quantity"
+        />
+      </div>
+      <div class="overlay hidden"></div>
     </main>
     <script
       type="module"
