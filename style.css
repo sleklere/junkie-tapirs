@@ -126,6 +126,7 @@ body {
   font-family: "Press Start 2P", sans-serif;
   font-size: 3rem;
   color: #222;
+  word-spacing: -2rem;
 }
 
 .mint-description {
@@ -142,6 +143,7 @@ body {
   text-align: center;
   font-size: 3rem;
   font-family: "Press Start 2P", sans-serif;
+  padding-left: 1rem;
 }
 
 /* ////////////////////// */

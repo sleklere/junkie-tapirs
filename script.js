@@ -1,19 +1,19 @@
-const { MerkleTree } = require("merkletreejs");
-const keccak256 = require("keccak256");
+// const { MerkleTree } = require("merkletreejs");
+// const keccak256 = require("keccak256");
 
-let whitelistAddresses = [
-  "0x63Ca7A3F3c2984a286EB3be6afe011Ed6a5131df",
-  "0x3826335E2bc15Ffa99Bf697c28352C7E871a228b",
-];
+// let whitelistAddresses = [
+//   "0x63Ca7A3F3c2984a286EB3be6afe011Ed6a5131df",
+//   "0x3826335E2bc15Ffa99Bf697c28352C7E871a228b",
+// ];
 
-const leafNodes = whitelistAddresses.map((addr) => keccak256(addr));
-const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
+// const leafNodes = whitelistAddresses.map((addr) => keccak256(addr));
+// const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 
-const rootHash = merkleTree.getRoot();
+// const rootHash = merkleTree.getRoot();
 
-console.log("Whitelist Merkle Tree\n", merkleTree.toString());
+// console.log("Whitelist Merkle Tree\n", merkleTree.toString());
 
-return;
+// return;
 
 ///////////////////////////////////
 
@@ -73,9 +73,9 @@ closeMintButton.addEventListener("click", function () {
 mintQuantity2.addEventListener("change", function () {
   // mintPrice.textContent++;
   if (this.value > 1) {
-    mintPrice.textContent = 0.1;
+    mintPrice.textContent = "0.006 Ξ";
   } else if (this.value == 1) {
-    mintPrice.textContent = 0.05;
+    mintPrice.textContent = "0.003 Ξ";
   } else {
     mintPrice.textContent = 0.0;
   }
