@@ -30,12 +30,21 @@
   <body>
     <header class="header">
       <!-- <a href="https://twitter.com/JunkieTapirs" target="_blank" class="main-title"><span class="coming-soon">Junkie Tapirs</span></a href="#"> -->
-      <button class="btn-connect-wallet">
-        <span class="coming-soon">Connect Wallet</span>
-      </button>
       <a href="https://twitter.com/JunkieTapirs" target="_blank" class="tw">
         <ion-icon class="logo-tw" name="logo-twitter"></ion-icon>
       </a>
+      <nav class="main-nav">
+        <ul class="main-nav-ul">
+          <li>
+            <button class="btn-mint">Mint!</button>
+          </li>
+          <li>
+            <button class="btn-connect-wallet">
+              <span class="coming-soon">Connect Wallet</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </header>
     <main>
       <section class="section-hero">
@@ -72,6 +81,24 @@
           src="./imgs/Banner.png"
         />
       </section>
+      <div class="mint-window hidden">
+        <button class="close-mint">&times;</button>
+        <h1 class="mint-title">Mint your Tapir!</h1>
+        <p class="mint-description">Welcome to the mint section!</p>
+        <p class="mint-description no-wl hidden">
+          Sorry! You are not whitelisted!
+        </p>
+        <span class="mint-price">0.0</span>
+        <input
+          type="number"
+          min="0"
+          max="2"
+          value="0"
+          class="mint-quantity"
+          id="mint-quantity"
+        />
+      </div>
+      <div class="overlay hidden"></div>
     </main>
     <script
       type="module"
