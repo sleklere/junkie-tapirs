@@ -12,8 +12,6 @@ html {
   overflow-y: hidden;
 }
 
-/* /////////////////////// */
-
 body {
   background-color: #17263d;
   overflow-x: hidden;
@@ -32,15 +30,6 @@ body {
   padding: 3rem 4.8rem 0 4.8rem;
 }
 
-.main-title {
-  text-decoration: none;
-  font-size: 4rem;
-  font-weight: 400;
-  font-family: "Silkscreen";
-  color: #fcc419;
-  text-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.246);
-}
-
 /* NAV */
 
 .main-nav-ul {
@@ -51,25 +40,29 @@ body {
   gap: 3rem;
 }
 
+.logo-tw {
+  height: 4.6rem;
+  width: 4.6rem;
+  cursor: pointer;
+  color: #fcc419;
+}
+
+/* Boton wallet */
+.btn-connect-wallet {
+  width: 20rem;
+}
+
 /* //////////////// */
 /* SECTION MINT */
 /* //////////////// */
 
 .btn-mint {
-  background-color: #fcc419;
-  padding: 1.25rem 1.5rem;
-  font-family: "Press Start 2P", sans-serif;
-  font-size: 1.2rem;
-  font-weight: 400;
-  border: 0;
-  border-radius: 50px;
   width: 12rem;
-  cursor: pointer;
 }
 
-.btn-mint:hover,
-.btn-mint:active {
-  background-color: #ddaa14;
+.btn:hover,
+.btn:active {
+  background-color: #b08912;
 }
 
 .mint-window {
@@ -82,7 +75,6 @@ body {
   padding: 5rem;
 
   background: linear-gradient(to bottom right, #fcc419, #f08c00);
-  /* background-color: #f76707; */
   border-radius: 20px;
 
   z-index: 10;
@@ -148,36 +140,6 @@ body {
 
 /* ////////////////////// */
 
-/* Boton wallet */
-.btn-connect-wallet {
-  background-color: #fcc31954;
-  padding: 1.25rem 1.5rem;
-  font-family: "Press Start 2P", sans-serif;
-  font-size: 1.2rem;
-  font-weight: 500;
-  border: 0;
-  border-radius: 50px;
-  width: 20rem;
-}
-.btn-connect-wallet:hover .coming-soon {
-  display: none;
-}
-
-.btn-connect-wallet:hover::before {
-  content: "Coming soon!";
-}
-
-/* Logo twitter */
-.tw {
-  cursor: pointer;
-  color: #fcc419;
-}
-
-.logo-tw {
-  height: 4.8rem;
-  width: 4.8rem;
-}
-
 /* ///////////////////////// */
 /* HERO SECTION */
 
@@ -207,8 +169,26 @@ body {
   color: #fff;
 }
 
-.text-tapirs {
+.span-tapirs {
   color: #fcc419;
+}
+
+.banner {
+  width: 192rem;
+}
+
+/* CHANGEABLE TAPIRS */
+
+.tapir-tap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.tapirs {
+  height: 28rem;
+  padding: 3rem 5rem 5rem 0;
 }
 
 .click-me {
@@ -228,25 +208,22 @@ body {
   right: 5%;
 }
 
-.banner {
-  width: 192rem;
-}
-
-/* TAPIRS CAMBIABLES */
-
-.section-tap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.tapirs {
-  height: 28rem;
-  padding: 3rem 5rem 5rem 0;
-}
-
-/* clases de ayuda */
+/* general/helper classes */
 .hidden {
   display: none;
+}
+
+.btn {
+  background-color: #fcc419;
+  padding: 1.25rem 1.5rem;
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.connected {
+  width: 14rem;
 }

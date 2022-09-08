@@ -1,3 +1,10 @@
+/* 2500px */
+@media (min-width: 120.625rem) {
+  .banner {
+    width: 102vw;
+  }
+}
+
 /* 1344px */
 @media (max-width: 84em) {
   .tapirs {
@@ -120,16 +127,33 @@
   .click-me {
     right: 0;
   }
+
+  .btn {
+    font-size: 1rem;
+    width: 8rem;
+  }
 }
 
 /* 340 */
 @media (max-width: 21.25rem) {
+  .main-nav-ul {
+    gap: 1rem;
+  }
+
   .logo {
     width: 32rem;
   }
 
+  .btn {
+    font-size: 1rem;
+    width: 8rem;
+    /* padding: 1rem 1.25rem; */
+  }
+
   .btn-connect-wallet {
-    font-size: 1.3rem;
+    /* padding: 1rem 0.4rem; */
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
   }
 
   .logo-tw {

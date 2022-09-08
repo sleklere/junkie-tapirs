@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="icon" href="./imgs/3.png" />
+    <link rel="icon" href="public/imgs/3.png" />
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="public/css/style.css" />
+    <link rel="stylesheet" href="public/css/queries.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,69 +22,68 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="./queries.css" />
-
     <script src="https://cdn.jsdelivr.net/npm/merkletreejs@0.2.32/merkletree.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/keccak256@1.0.6/keccak256.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.7.5/dist/web3.min.js"></script>
 
-    <script defer src="./script.js"></script>
-    <script defer src="./app.js"></script>
+    <script defer src="public/js/script.js"></script>
+    <script defer src="public/js/app.js"></script>
 
     <title>Junkie Tapirs</title>
   </head>
   <body>
     <header class="header">
-      <!-- <a href="https://twitter.com/JunkieTapirs" target="_blank" class="main-title"><span class="coming-soon">Junkie Tapirs</span></a href="#"> -->
-      <a href="https://twitter.com/JunkieTapirs" target="_blank" class="tw">
+      <a href="https://twitter.com/JunkieTapirs" target="_blank">
         <ion-icon class="logo-tw" name="logo-twitter"></ion-icon>
       </a>
       <nav class="main-nav">
         <ul class="main-nav-ul">
           <li>
-            <button class="btn-mint">Mint!</button>
+            <button class="btn btn-mint">Mint!</button>
           </li>
           <li>
-            <button class="btn-connect-wallet">
-              <span class="coming-soon">Connect Wallet</span>
-            </button>
+            <button class="btn btn-connect-wallet">Connect Wallet</button>
           </li>
         </ul>
       </nav>
     </header>
     <main>
       <section class="section-hero">
-        <img class="logo" alt="Tapirs Logo Gif" src="./imgs/logo.gif" />
+        <img class="logo" alt="Tapirs Logo Gif" src="public/imgs/logo.gif" />
         <div class="container-descrip-tapir">
           <h2 class="hero-description">
-            3333 <span class="text-tapirs">Junkie Tapirs</span> are coming to
+            3333 <span class="span-tapirs">Junkie Tapirs</span> are coming to
             Ethereum to get high as fuck🌈<br /><br />👽Are you ready for the
             trip?🍄
           </h2>
-          <section class="section-tap">
+          <div class="tapir-tap">
             <p class="click-me">Click me!</p>
             <img
-              src="./imgs/pngfind.com-drawn-arrow-png-34624.png"
+              src="public/imgs/pngfind.com-drawn-arrow-png-34624.png"
               alt="pointer"
               class="click-me-img"
             />
-            <img class="tapirs tapir-1" alt="1st tapir" src="./imgs/1.png" />
+            <img
+              class="tapirs tapir-1"
+              alt="1st tapir"
+              src="public/imgs/1.png"
+            />
             <img
               class="tapirs tapir-2 hidden"
-              alt="1st tapir"
-              src="./imgs/2.png"
+              alt="2nd tapir"
+              src="public/imgs/2.png"
             />
             <img
               class="tapirs tapir-3 hidden"
-              alt="1st tapir"
-              src="./imgs/3.png"
+              alt="3rd tapir"
+              src="public/imgs/3.png"
             />
-          </section>
+          </div>
         </div>
         <img
           class="banner"
           alt="Tapirs Collection Gif"
-          src="./imgs/Banner.png"
+          src="public/imgs/Banner.png"
         />
       </section>
       <div class="mint-window hidden">

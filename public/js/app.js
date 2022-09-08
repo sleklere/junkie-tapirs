@@ -1,7 +1,6 @@
 const tapir1 = document.querySelector(".tapir-1");
 const tapir2 = document.querySelector(".tapir-2");
 const tapir3 = document.querySelector(".tapir-3");
-const tapirs = document.querySelector(".tapirs");
 
 const tapirsEls = [tapir1, tapir2, tapir3];
 
