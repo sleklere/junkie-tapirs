@@ -128,8 +128,13 @@
     right: 0;
   }
 
-  .btn {
+  .btn-mint {
     font-size: 1rem;
+    width: 8rem;
+  }
+
+  .btn-connect-wallet {
+    font-size: 1.2rem;
     width: 8rem;
   }
 }
