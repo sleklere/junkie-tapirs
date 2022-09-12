@@ -50,11 +50,22 @@ body {
 /* Boton wallet */
 .btn-connect-wallet {
   width: 20rem;
+  overflow: hidden;
 }
 
 /* //////////////// */
 /* SECTION MINT */
 /* //////////////// */
+
+.not-wl {
+  font-family: "Silkscreen";
+  position: absolute;
+  color: #fcc419;
+  font-weight: 700;
+  font-size: 2.5rem;
+  top: 5%;
+  right: -25%;
+}
 
 .btn-mint {
   width: 12rem;
@@ -225,5 +236,12 @@ body {
 }
 
 .connected {
-  width: 14rem;
+  width: 20rem;
+  cursor: auto;
+  background-color: #17263d;
+  border: 2px solid #fcc419;
+  color: #fff;
+  font-family: "Silkscreen";
+  font-size: 1.5rem;
+  font-weight: 700;
 }

@@ -1,14 +1,14 @@
 // FUNCTIONS
-function getMerkleProof(address) {
+function getMerkleProof(address, tree) {
   const hashedAddress = keccak256(address);
-  return merkleTree.getHexProof(hashedAddress);
+  return tree.getHexProof(hashedAddress);
 }
 
 async function connect() {
   if (window.ethereum) {
     await window.ethereum.request({ method: "eth_requestAccounts" });
     buttonConnect.classList.add("connected");
-    buttonConnect.textContent = "Connected";
+    buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     window.web3 = new Web3(window.ethereum);
     const account = web3.eth.accounts;
     //Get the current MetaMask selected/active wallet
@@ -67,20 +67,37 @@ const checkAcc = async () => {
   const account = await accountConnected();
   if (account != undefined) {
     checkAndSwitch();
-    buttonConnect.textContent = "Connected";
+    buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     buttonConnect.classList.add("connected");
   }
 };
 ////////////////////////////////////////////
-const mintButton2 = document.querySelector(".btn-mint");
+const mintButton = document.querySelector(".btn-mint");
 const buttonConnect = document.querySelector(".btn-connect-wallet");
 ////////////////////////////////////////////
-mintButton2.addEventListener("click", function () {
+mintButton.addEventListener("click", function () {
   (async () => {
-    const account = await accountConnected();
-    let proof = getMerkleProof(account);
+    const account = await web3.eth.getAccounts();
+
+    let proof = getMerkleProof(account[0], merkleTree);
     proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
     console.log(proof);
+
+    let proofPayed = getMerkleProof(account[0], merkleTree2);
+    proofPayed.length > 1
+      ? (proofPayed = proofPayed.join(", "))
+      : (proofPayed = proofPayed[0]);
+    console.log(proofPayed);
+    if (!proofPayed) {
+      mintQuantity.max = 1;
+    }
+
+    if (proof && proof.length >= 1) {
+      mintWindow.classList.remove("hidden");
+      overlay.classList.remove("hidden");
+    } else {
+      alert("Sorry! Your are not whitelisted!");
+    }
   })();
 });
 
@@ -107,9 +124,20 @@ let whitelistAddresses = [
   "0x36e99c9de23d07f67F06fA475D2b605279b52050",
 ];
 
+let testPayedWl = [
+  "0x36e99c9de23d07f67F06fA475D2b605279b52050",
+  "0x3826335E2bc15Ffa99Bf697c28352C7E871a228b",
+  "0x36e99c9de23d07f67F06fA475D2b605279b5205c",
+];
+
 const leafNodes = whitelistAddresses.map((addr) => keccak256(addr));
 const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 const rootHash = merkleTree.getRoot();
+
+const leafNodes2 = testPayedWl.map((addr) => keccak256(addr));
+const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: true });
+const rootHash2 = merkleTree2.getRoot();
+
 // root que paso t
 const root =
   "0x762cf6c3f961f9d5084b3fe2e3129ff762eb6bad898e3eef1348964a56e4722e";
