@@ -125,19 +125,32 @@ body {
   z-index: 5;
 }
 
+.mint-description {
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 2.5rem;
+  color: #222;
+}
+
+.mint-sub-container {
+  display: flex;
+  flex-direction: row;
+  gap: 15rem;
+}
+
+.div--price-quantity {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .mint-price {
   font-family: "Press Start 2P", sans-serif;
   font-size: 3rem;
   color: #222;
   word-spacing: -2rem;
 }
-
-.mint-description {
-  font-family: "Press Start 2P", sans-serif;
-  font-size: 3rem;
-  color: #222;
-}
-
 .mint-quantity {
   width: 6rem;
   height: 6rem;
@@ -147,6 +160,17 @@ body {
   font-size: 3rem;
   font-family: "Press Start 2P", sans-serif;
   padding-left: 1rem;
+}
+
+.btn-mint-action {
+  background-color: #222 !important;
+  color: #fff;
+  padding: 1.5rem !important;
+}
+
+.secret-tapir {
+  height: 20rem;
+  border-radius: 20%;
 }
 
 /* ////////////////////// */

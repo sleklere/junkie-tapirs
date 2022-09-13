@@ -91,15 +91,21 @@
         <button class="close-mint">&times;</button>
         <h1 class="mint-title">Mint your Tapir!</h1>
         <p class="mint-description">Welcome to the mint section!</p>
-        <span class="mint-price">Free!</span>
-        <input
-          type="number"
-          min="1"
-          max="2"
-          value="1"
-          class="mint-quantity"
-          id="mint-quantity"
-        />
+        <div class="mint-sub-container">
+          <img src="./public/imgs/unrevealed.gif" class="secret-tapir" />
+          <div class="div--price-quantity">
+            <span class="mint-price">Free!</span>
+            <input
+              type="number"
+              min="1"
+              max="2"
+              value="1"
+              class="mint-quantity"
+              id="mint-quantity"
+            />
+            <button class="btn btn-mint-action">Mint</button>
+          </div>
+        </div>
       </div>
       <div class="overlay hidden"></div>
     </main>

@@ -7,13 +7,16 @@ function getMerkleProof(address, tree) {
 async function connect() {
   if (window.ethereum) {
     await window.ethereum.request({ method: "eth_requestAccounts" });
-    buttonConnect.classList.add("connected");
-    buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
-    window.web3 = new Web3(window.ethereum);
+    // window.web3 = new Web3(window.ethereum);
     const account = web3.eth.accounts;
     //Get the current MetaMask selected/active wallet
     const walletAddress = account.givenProvider.selectedAddress;
-    console.log(`Wallet: ${walletAddress}`);
+    buttonConnect.textContent = `${walletAddress.slice(
+      0,
+      6
+    )}...${walletAddress.slice(-4)}`;
+    buttonConnect.classList.add("connected");
+    console.log(`Wallet connected: ${walletAddress}`);
     web3.eth.getChainId().then(console.log);
   } else {
     console.log("No wallet");
@@ -59,7 +62,7 @@ const checkAndSwitch = async () => {
 const accountConnected = async () => {
   window.web3 = new Web3(window.ethereum);
   const account = await web3.eth.getAccounts();
-  console.log(`Account connected: ${account[0]}`);
+  console.log(`Account connected: ${account}`);
   return account[0];
 };
 
@@ -149,3 +152,10 @@ checkAcc();
 // console.log("Whitelist Merkle Tree\n", merkleTree.toString());
 
 //////////////////////////
+
+const mintActionBtn = document.querySelector("btn-mint-action");
+
+// mintActionBtn.addEventListener('click', function(){
+//   if wallet gratis {}
+//   web3.eth.sendTransaction()
+// })
