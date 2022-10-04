@@ -93,6 +93,18 @@
         <button class="close-mint">&times;</button>
         <h1 class="mint-title">Mint your Tapir!</h1>
         <p class="mint-description">Welcome to the mint section!</p>
+        <div class="minted--supply">
+          <p>
+            Total Supply:
+            <span class="minted">--</span> /
+            <span class="max-supply">--</span>
+          </p>
+          <p>
+            Free Supply:
+            <span class="minted-free">--</span> /
+            <span class="max-supply-free">--</span>
+          </p>
+        </div>
         <div class="mint-sub-container">
           <img src="./public/imgs/unrevealed.gif" class="secret-tapir" />
           <div class="div--price-quantity">
@@ -105,10 +117,18 @@
               class="mint-quantity"
               id="mint-quantity"
             />
+            <div class="add-rm-mint">
+              <ion-icon name="remove-circle" class="circle-icon rm-circle"
+                ><button></button
+              ></ion-icon>
+              <span class="q-mint">0</span>
+              <ion-icon name="add-circle" class="circle-icon add-circle"
+                ><button></button
+              ></ion-icon>
+            </div>
             <button class="btn btn-mint-action">Mint</button>
           </div>
         </div>
-        <p class="max-supply">Max supply here</p>
       </div>
       <div class="overlay hidden"></div>
     </main>

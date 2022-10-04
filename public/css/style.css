@@ -88,7 +88,9 @@ body {
   width: 70%;
   height: 70%;
   transform: translate(-50%, -50%);
-  padding: 5rem;
+  padding: 3rem;
+  max-width: 90rem;
+  max-height: 45rem;
 
   background: linear-gradient(to bottom right, #fcc419, #f08c00);
   border-radius: 20px;
@@ -98,14 +100,21 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 5rem;
+  gap: 4rem;
+
+  color: #222;
+  font-family: "Press Start 2P", sans-serif;
 }
 
 .mint-title {
-  font-family: "Press Start 2P";
-  font-size: 4.5rem;
+  font-size: 4rem;
   font-weight: 400;
-  color: #222;
+}
+
+.title-not-wl {
+  font-size: 4rem;
+  font-weight: 400;
+  margin-top: 12rem;
 }
 
 .close-mint {
@@ -131,15 +140,25 @@ body {
 }
 
 .mint-description {
-  font-family: "Press Start 2P", sans-serif;
   font-size: 2.5rem;
-  color: #222;
+  text-align: center;
+}
+
+.minted--supply {
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.minted--supply p:first-child {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .mint-sub-container {
   display: flex;
-  flex-direction: row;
-  gap: 15rem;
+  /* gap: 15rem; */
+  width: 100%;
+  justify-content: space-around;
 }
 
 .div--price-quantity {
@@ -148,23 +167,45 @@ body {
   gap: 2rem;
   justify-content: flex-start;
   align-items: center;
+  width: 150px;
 }
 
 .mint-price {
   font-family: "Press Start 2P", sans-serif;
-  font-size: 3rem;
+  font-size: 1.8rem;
   color: #222;
   word-spacing: -2rem;
+  text-align: center;
 }
 .mint-quantity {
-  width: 6rem;
-  height: 6rem;
+  display: none;
+  width: 4rem;
+  height: 4rem;
   border: 3px solid;
   background: rgb(228, 228, 228);
   text-align: center;
-  font-size: 3rem;
+  font-size: 2rem;
   font-family: "Press Start 2P", sans-serif;
   padding-left: 1rem;
+}
+
+.add-rm-mint {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.q-mint {
+  font-size: 2.5rem;
+}
+
+.circle-icon {
+  font-size: 3.5rem;
+}
+
+.circle-icon:hover {
+  cursor: pointer;
 }
 
 .btn-mint-action {
@@ -174,7 +215,7 @@ body {
 }
 
 .secret-tapir {
-  height: 20rem;
+  height: 15rem;
   border-radius: 20%;
 }
 

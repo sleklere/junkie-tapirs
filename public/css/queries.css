@@ -34,6 +34,18 @@
     font-size: 1.7rem;
     padding: 2rem 0 2rem 2rem;
   }
+
+  .mint-window {
+    width: 90%;
+  }
+
+  .mint-title {
+    font-size: 3.6rem;
+  }
+
+  .mint-description {
+    font-size: 2.4rem;
+  }
 }
 
 /* 700px */
@@ -41,10 +53,6 @@
   .logo {
     width: 50rem;
   }
-
-  /* .section-hero {
-    justify-content: space-around;
-  } */
 
   .hero-description {
     font-size: 1.6rem;
@@ -56,6 +64,18 @@
 
   .click-me {
     top: 5%;
+  }
+
+  .mint-window {
+    width: 90%;
+  }
+
+  .mint-title {
+    font-size: 3rem;
+  }
+
+  .mint-description {
+    font-size: 2rem;
   }
 }
 
@@ -85,6 +105,14 @@
 
   .click-me {
     right: -15%;
+  }
+
+  .mint-title {
+    font-size: 2.5rem;
+  }
+
+  .mint-description {
+    font-size: 1.5rem;
   }
 }
 
@@ -150,6 +178,29 @@
     font-size: 1.2rem;
     width: 11rem;
   }
+
+  .mint-window {
+    gap: 2rem;
+    height: 80%;
+    max-height: unset;
+  }
+  .mint-sub-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .minted--supply {
+    font-size: 1.1rem;
+  }
+
+  .minted--supply p:first-child {
+    font-size: 1.3rem;
+  }
+
+  .secret-tapir {
+    width: 15rem;
+    margin-bottom: 2rem;
+  }
 }
 
 /* 340 */
@@ -159,7 +210,7 @@
   }
 
   .logo {
-    width: 32rem;
+    width: 30rem;
   }
 
   .btn {
@@ -177,13 +228,6 @@
   .logo-tw {
     height: 3.5rem;
     width: 3.5rem;
-  }
-}
-
-/* 310px */
-@media (max-width: 19.4rem) {
-  .logo {
-    width: 30rem;
   }
 
   .click-me {
