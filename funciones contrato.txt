@@ -1,0 +1,25 @@
+FREE_MAX_MINTS es la cantidad maxima que pueden mintear los de la WL gratis, osea 3 en total, 1 gratis y 2 pagos
+
+WL_MAX_MINTS lo mismo pero para la WL paga, osea 2 pagos
+
+PUBLIC_MAX_MINTS lo mismo pero para cuando pueda mintear cualquiera, esta puesto en 10 pero ni idea
+
+freeMerkleRoot y WLMerkleRoot tenes las merkle roots que tiene puestas ahora, si necesitas que le cambie la root para que puedas probar cosas avisame
+
+maxSupply tenes la supply maxima contando los free mints, que seria 3333
+
+totalSupply tenes la cantidad total de NFTs minteados, gratis o pagos no importa
+
+freeSupply tenes la supply solo de los free mints, que seria 333
+
+mintedFreeSupply tenes la cantidad de free mints que ya se mintearon, osea x/333
+
+WLSaleActive tenes un bool para checkear si ya puede mintear la WL
+
+publicSaleActive lo mismo pero para la public sale
+
+price te devuelve el precio establecido en el contrato, te lo da en wei que es el numero multiplicado por 10 a la -18
+
+numberMinted le tenes que dar el address como string supongo y te devuelve la cantidad de NFTs que minteo en total
+
+freeMinted le das el address tambien y te devuelve un bool que es si minteo el gratis o no

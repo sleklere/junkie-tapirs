@@ -53,6 +53,11 @@ body {
   overflow: hidden;
 }
 
+.btn-connect {
+  width: 12rem;
+  display: none;
+}
+
 /* //////////////// */
 /* SECTION MINT */
 /* //////////////// */
@@ -209,7 +214,8 @@ body {
 }
 
 .banner {
-  width: 192rem;
+  width: 196rem;
+  /* width: 102%; */
 }
 
 /* CHANGEABLE TAPIRS */

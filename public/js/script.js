@@ -1,3 +1,10 @@
+const keccak256 = require("keccak256");
+const Web3 = require("web3");
+const { MerkleTree } = require("merkletreejs");
+
+// browserify main.js | uglifyjs > bundle.js
+// contrato --> 0x53E0CC4c51DcEC811C44e6Da0e72a6576e4C44c3
+
 ////////////////////////////////////////////
 // FUNCTIONS //
 ////////////////////////////////////////////
@@ -150,3 +157,19 @@ const rootHash2 = merkleTree2.getRoot();
 
 checkAcc();
 // console.log("Whitelist Merkle Tree\n", merkleTree.toString());
+
+const maxSupplyEl = document.querySelector(".max-supply");
+
+const jsonInterface = [];
+
+const myContract = new web3.eth.Contract(
+  jsonInterface,
+  "0x53E0CC4c51DcEC811C44e6Da0e72a6576e4C44c3"
+);
+
+myContract.defaultAccount = "0x36e99c9de23d07f67F06fA475D2b605279b52050";
+
+// maxSupplyEl.textContent = myContract.maxSupply();
+console.log(myContract);
+console.log(`default account: ${myContract.defaultAccount}`);
+// myContract.methods.maxSupply();

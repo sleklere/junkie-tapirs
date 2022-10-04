@@ -1,0 +1,7 @@
+Tenes 3:
+
+freeMint le tenes que dar 3 variables, la cantidad de ETH que tiene que gastar para mintear, que si freeMinted te da false le restarías 0.003 a 0.003 x la cantidad a mintear; la cantidad de NFTs a mintear, que en este caso el maximo seria 3 y el minimo 1; y la merkle proof que tiene que ser una string de todos los hashes unidos por una coma sin espacios, asi: 0xced2177e41d4b687d6ef4aa5b6bb6f3b43c8e82a5e2f7266e5293a3bd0136d1a,0x46ffb1fd91e45af97e75900032f6fc4c877b22dd8ecd949fa8a46a800fd3e71d
+
+WLMint es exactamente lo mismo pero no le tenes que restar nada a la cantidad de ETH y el minimo de nfts a mintear seria 1 y el maximo 2
+
+mint es para mintear la public sale y sería lo mismo pero sin merkle proof y el maximo de nfts a mintear seria 10
