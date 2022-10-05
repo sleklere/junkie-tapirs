@@ -2,10 +2,6 @@ const mintWindow = document.querySelector(".mint-window");
 const overlay = document.querySelector(".overlay");
 const closeMintButton = document.querySelector(".close-mint");
 const mintPrice = document.querySelector(".mint-price");
-const mintQuantity = document.querySelector(".mint-quantity");
-// const addMintQ = document.querySelector(".add-circle");
-// const rmMintQ = document.querySelector(".rm-circle");
-// const quantMint = document.querySelector(".q-mint");
 
 const tapir1 = document.querySelector(".tapir-1");
 const tapir2 = document.querySelector(".tapir-2");
@@ -32,20 +28,10 @@ closeMintButton.addEventListener("click", function () {
   overlay.classList.add("hidden");
 });
 
-mintQuantity.addEventListener("change", function () {
-  if (this.value > 1) {
-    mintPrice.textContent = "0.003 Ξ";
-  } else if (this.value == 1) {
-    mintPrice.textContent = "Free!";
-  }
-});
-
-// rmMintQ.addEventListener("click", function () {
-//   const value = Number(quantMint.textContent);
-//   if (value > 0) quantMint.textContent = value - 1;
-// });
-
-// addMintQ.addEventListener("click", function () {
-//   const value = Number(quantMint.textContent);
-//   if (value < 10) quantMint.textContent = value + 1;
+// mintQuantity.addEventListener("change", function () {
+//   if (this.value > 1) {
+//     mintPrice.textContent = "0.003 Ξ";
+//   } else if (this.value == 1) {
+//     mintPrice.textContent = "Free!";
+//   }
 // });

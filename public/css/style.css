@@ -177,17 +177,6 @@ body {
   word-spacing: -2rem;
   text-align: center;
 }
-.mint-quantity {
-  display: none;
-  width: 4rem;
-  height: 4rem;
-  border: 3px solid;
-  background: rgb(228, 228, 228);
-  text-align: center;
-  font-size: 2rem;
-  font-family: "Press Start 2P", sans-serif;
-  padding-left: 1rem;
-}
 
 .add-rm-mint {
   display: flex;

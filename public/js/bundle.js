@@ -96777,6 +96777,59 @@ const showMintedSupply = async function () {
   freeMintedEl.textContent = await myContract.methods.mintedFreeSupply().call();
 };
 
+const wlChecks = async function () {
+  const account = (await web3.eth.getAccounts())[0];
+
+  const freeSupply = await myContract.methods.freeSupply().call();
+  const freeMinted = await myContract.methods.freeMinted(account).call();
+  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+  const wlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
+  const publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
+  const mintedAcc = await myContract.methods.numberMinted(account).call();
+  // let mintQuantTx = 0;
+  // let mintPriceTx;
+  const priceMint = await myContract.methods.price().call();
+  const quantMintNum = Number(quantMint.textContent);
+  // check 333/333
+  if (mintedFreeSupply >= freeSupply) {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+  } else if (freeMinted) {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+  } else {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = (quantMintNum - 1) * priceMint;
+  }
+  console.log(`maxMint : ${maxMint}`);
+};
+
+const displayPrice = async function () {
+  const account = (await web3.eth.getAccounts())[0];
+  let proof = getMerkleProof(account[0], merkleTree);
+  let proofPayed = getMerkleProof(account[0], merkleTree2);
+
+  const freeSupply = await myContract.methods.freeSupply().call();
+  const freeMinted = await myContract.methods.freeMinted(account).call();
+  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+  const mintedAcc = await myContract.methods.numberMinted(account).call();
+  const priceMint = await myContract.methods.price().call();
+  const quantMintNum = Number(quantMint.textContent);
+  // supply 333/333 or free minted
+  if (mintedFreeSupply >= freeSupply || freeMinted || (proofPayed && !proof)) {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+    mintPrice.textContent = mintPriceTx / 10 ** 18;
+  } else {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = (quantMintNum - 1) * priceMint;
+    mintPrice.textContent =
+      quantMintNum == 1 ? "Free!" : mintPriceTx / 10 ** 18;
+  }
+};
+
 ////////////////////////////////////////////
 // QUERY SELECTORS //
 ////////////////////////////////////////////
@@ -96793,6 +96846,7 @@ const freeMintedEl = document.querySelector(".minted-free");
 
 const divPriceQuant = document.querySelector(".div--price-quantity");
 const quantMint = document.querySelector(".q-mint");
+const quantMintNum = Number(quantMint.textContent);
 const addMintQ = document.querySelector(".add-circle");
 const rmMintQ = document.querySelector(".rm-circle");
 
@@ -96817,9 +96871,6 @@ openMintWindow.addEventListener("click", function () {
       ? (proofPayed = proofPayed.join(", "))
       : (proofPayed = proofPayed[0]);
     console.log(`proofPayed mintwindow: ${proofPayed}`);
-    if (!proofPayed) {
-      mintQuantity.max = 1;
-    }
 
     if (proof && proof.length >= 1 && (WLSaleActive || publicSaleActive)) {
       mintWindow.classList.remove("hidden");
@@ -96837,32 +96888,9 @@ openMintWindow.addEventListener("click", function () {
   })();
 });
 
-const displayPrice = async function () {
-  const account = (await web3.eth.getAccounts())[0];
-
-  const freeSupply = await myContract.methods.freeSupply().call();
-  const freeMinted = await myContract.methods.freeMinted(account).call();
-  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  const mintedAcc = await myContract.methods.numberMinted(account).call();
-  const priceMint = await myContract.methods.price().call();
-  const quantMintNum = Number(quantMint.textContent);
-  // supply 333/333 or free minted
-  if (mintedFreeSupply >= freeSupply || freeMinted || proofPayed) {
-    maxMint = freeMaxMints - mintedAcc;
-    mintPriceTx = quantMintNum * priceMint;
-    mintPrice.textContent = mintPriceTx / 10 ** 18;
-  } else {
-    maxMint = freeMaxMints - mintedAcc;
-    mintPriceTx = (quantMintNum - 1) * priceMint;
-    mintPrice.textContent =
-      quantMintNum == 1 ? "Free!" : mintPriceTx / 10 ** 18;
-  }
-};
-
 rmMintQ.addEventListener("click", function () {
   const value = Number(quantMint.textContent);
-  if (value > 0) quantMint.textContent = value - 1;
+  if (value > 1) quantMint.textContent = value - 1;
   const quantMintNum = Number(quantMint.textContent);
   console.log(quantMintNum);
   displayPrice();
@@ -96895,6 +96923,10 @@ let whitelistAddresses = [
   "0x63Ca7A3F3c2984a286EB3be6afe011Ed6a5131df",
   "0x3826335E2bc15Ffa99Bf697c28352C7E871a228b",
   "0x36e99c9de23d07f67F06fA475D2b605279b52050",
+  "0xb485a46a59B206d5C30Ad6c814E2e3373F132dd9",
+  "0xaAaaD83aCFfc24f0682CfcaDAf1Fc41508aFc3e4",
+  "0xe1D6bb8F54E345C1106C22958EFB815Dea616019",
+  "0x5a91330C1147fb936bf134Ef744988985e610a7d",
   // "0x36e99c9de23d07f67F06fA475D2b605279b5205c",
   // "0x36e99c9de23d07f67F06fA475D2b605279b53050",
   // "0x36e99c9de23d07f67F06fA475D2b605279b52051",
@@ -96934,35 +96966,9 @@ const myContract = new web3.eth.Contract(
 );
 
 showMintedSupply();
-let quantMintNum;
+// let quantMintNum;
 let mintPriceTx;
-const wlChecks = async function () {
-  const account = (await web3.eth.getAccounts())[0];
 
-  const freeSupply = await myContract.methods.freeSupply().call();
-  const freeMinted = await myContract.methods.freeMinted(account).call();
-  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  const wlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
-  const publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
-  const mintedAcc = await myContract.methods.numberMinted(account).call();
-  // let mintQuantTx = 0;
-  // let mintPriceTx;
-  const priceMint = await myContract.methods.price().call();
-  const quantMintNum = Number(quantMint.textContent);
-  // check 333/333
-  if (mintedFreeSupply >= freeSupply) {
-    maxMint = freeMaxMints - mintedAcc;
-    mintPriceTx = quantMintNum * priceMint;
-  } else if (freeMinted) {
-    maxMint = freeMaxMints - mintedAcc;
-    mintPriceTx = quantMintNum * priceMint;
-  } else {
-    maxMint = freeMaxMints - mintedAcc;
-    mintPriceTx = (quantMintNum - 1) * priceMint;
-  }
-  console.log(`maxMint : ${maxMint}`);
-};
 // listener for mint button to send TX
 mintButton.addEventListener("click", function () {
   console.log(quantMintNum);
