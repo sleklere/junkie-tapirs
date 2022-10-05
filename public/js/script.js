@@ -529,7 +529,7 @@ const checkNetwork = async () => {
     // console.log(`current chain id: ${currentChainId}`);
 
     // return true if current network is the same as the one targeted
-    if (currentChainId == "0x4") {
+    if (currentChainId == "0x5") {
       return true;
     }
     // return false if the current network is not the one targeted
@@ -544,7 +544,7 @@ const checkAndSwitch = async () => {
     console.log("Incorrect network! Changing now");
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0x4" }],
+      params: [{ chainId: "0x5" }],
     });
     // refresh page
     window.location.reload();
@@ -593,7 +593,8 @@ const rmMintQ = document.querySelector(".rm-circle");
 ////////////////////////////////////////////
 // EVENT LISTENERS //
 ////////////////////////////////////////////
-let maxMint = 10;
+let maxMint = 1;
+let proof;
 
 openMintWindow.addEventListener("click", function () {
   (async () => {
@@ -601,15 +602,15 @@ openMintWindow.addEventListener("click", function () {
     const publicSaleActive = await myContract.methods.publicSaleActive().call();
     const account = await web3.eth.getAccounts();
 
-    let proof = getMerkleProof(account[0], merkleTree);
-    proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
-    console.log(proof);
+    proof = getMerkleProof(account[0], merkleTree);
+    // proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
+    console.log(`proof mintwindow: ${proof}`);
 
     let proofPayed = getMerkleProof(account[0], merkleTree2);
     proofPayed.length > 1
       ? (proofPayed = proofPayed.join(", "))
       : (proofPayed = proofPayed[0]);
-    console.log(proofPayed);
+    console.log(`proofPayed mintwindow: ${proofPayed}`);
     if (!proofPayed) {
       mintQuantity.max = 1;
     }
@@ -617,6 +618,7 @@ openMintWindow.addEventListener("click", function () {
     if (proof && proof.length >= 1 && (WLSaleActive || publicSaleActive)) {
       mintWindow.classList.remove("hidden");
       overlay.classList.remove("hidden");
+      displayPrice();
     } else {
       // alert("Sorry! Your are not whitelisted!");
       mintWindow.classList.remove("hidden");
@@ -629,14 +631,43 @@ openMintWindow.addEventListener("click", function () {
   })();
 });
 
+const displayPrice = async function () {
+  const account = (await web3.eth.getAccounts())[0];
+
+  const freeSupply = await myContract.methods.freeSupply().call();
+  const freeMinted = await myContract.methods.freeMinted(account).call();
+  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+  const mintedAcc = await myContract.methods.numberMinted(account).call();
+  const priceMint = await myContract.methods.price().call();
+  const quantMintNum = Number(quantMint.textContent);
+  // supply 333/333 or free minted
+  if (mintedFreeSupply >= freeSupply || freeMinted || proofPayed) {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+    mintPrice.textContent = mintPriceTx / 10 ** 18;
+  } else {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = (quantMintNum - 1) * priceMint;
+    mintPrice.textContent =
+      quantMintNum == 1 ? "Free!" : mintPriceTx / 10 ** 18;
+  }
+};
+
 rmMintQ.addEventListener("click", function () {
   const value = Number(quantMint.textContent);
   if (value > 0) quantMint.textContent = value - 1;
+  const quantMintNum = Number(quantMint.textContent);
+  console.log(quantMintNum);
+  displayPrice();
 });
 
 addMintQ.addEventListener("click", function () {
   const value = Number(quantMint.textContent);
   if (value < maxMint) quantMint.textContent = value + 1;
+  const quantMintNum = Number(quantMint.textContent);
+  console.log(quantMintNum);
+  displayPrice();
 });
 
 buttonConnect.addEventListener("click", function () {
@@ -657,12 +688,16 @@ window.ethereum.on("accountsChanged", async () => {
 let whitelistAddresses = [
   "0x63Ca7A3F3c2984a286EB3be6afe011Ed6a5131df",
   "0x3826335E2bc15Ffa99Bf697c28352C7E871a228b",
+  "0x36e99c9de23d07f67F06fA475D2b605279b52050",
+  "0xb485a46a59B206d5C30Ad6c814E2e3373F132dd9",
+  "0xaAaaD83aCFfc24f0682CfcaDAf1Fc41508aFc3e4",
+  "0xe1D6bb8F54E345C1106C22958EFB815Dea616019",
+  "0x5a91330C1147fb936bf134Ef744988985e610a7d",
   // "0x36e99c9de23d07f67F06fA475D2b605279b5205c",
   // "0x36e99c9de23d07f67F06fA475D2b605279b53050",
   // "0x36e99c9de23d07f67F06fA475D2b605279b52051",
   // "0x36e99c9de23d07f67F06fA475D2b605279b52053",
   // "0x36e99c9de23d07f67F06fA475E2b605279b52050",
-  "0x36e99c9de23d07f67F06fA475D2b605279b52050",
 ];
 
 let testPayedWl = [
@@ -674,6 +709,7 @@ let testPayedWl = [
 const leafNodes = whitelistAddresses.map((addr) => keccak256(addr));
 const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 const rootHash = merkleTree.getRoot();
+console.log(rootHash);
 
 const leafNodes2 = testPayedWl.map((addr) => keccak256(addr));
 const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: true });
@@ -692,37 +728,45 @@ checkAcc();
 
 const myContract = new web3.eth.Contract(
   jsonInterface,
-  "0x53e0cc4c51dcec811c44e6da0e72a6576e4c44c3"
+  "0xA460c864edf6c4BdA1eF9666F9B6E25B26793Ad0"
 );
 
 showMintedSupply();
-
-(async function () {
-  // const WLSaleActive = await myContract.methods.WLSaleActive().call();
-  // const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  // const wlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
-  // const publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
-  // const maxSupply = await myContract.methods.maxSupply().call();
-  // const totalSupply = await myContract.methods.totalSupply().call();
-  // const freeSupply = await myContract.methods.freeSupply().call();
-  // const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  // const publicSaleActive = await myContract.methods.publicSaleActive().call();
-});
-
+let quantMintNum;
+let mintPriceTx;
 const wlChecks = async function () {
   const account = (await web3.eth.getAccounts())[0];
 
-  let proof = getMerkleProof(account[0], merkleTree);
-  proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
-  console.log(proof);
-
-  let proofPayed = getMerkleProof(account[0], merkleTree2);
-  proofPayed.length > 1
-    ? (proofPayed = proofPayed.join(", "))
-    : (proofPayed = proofPayed[0]);
-  console.log(proofPayed);
-
+  const freeSupply = await myContract.methods.freeSupply().call();
+  const freeMinted = await myContract.methods.freeMinted(account).call();
+  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+  const wlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
+  const publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
+  const mintedAcc = await myContract.methods.numberMinted(account).call();
+  // let mintQuantTx = 0;
+  // let mintPriceTx;
+  const priceMint = await myContract.methods.price().call();
+  const quantMintNum = Number(quantMint.textContent);
   // check 333/333
-  // else if freeMinted
-  // else
+  if (mintedFreeSupply >= freeSupply) {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+  } else if (freeMinted) {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+  } else {
+    maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = (quantMintNum - 1) * priceMint;
+  }
+  console.log(`maxMint : ${maxMint}`);
 };
+// listener for mint button to send TX
+mintButton.addEventListener("click", function () {
+  console.log(quantMintNum);
+  myContract.methods
+    .freeMint(quantMintNum, proof)
+    .send({ from: account, value: mintPriceTx })
+    .then((r) => console.log(r));
+});
+wlChecks();
