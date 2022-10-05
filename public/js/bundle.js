@@ -96704,6 +96704,22 @@ const jsonInterface = [
   },
 ];
 
+let freeSupply;
+let freeMinted;
+let mintedFreeSupply;
+let freeMaxMints;
+let mintedAcc;
+let priceMint;
+let publicSaleActive;
+
+let freeSupplyX;
+let freeMintedX;
+let mintedFreeSupplyX;
+let freeMaxMintsX;
+let mintedAccX;
+let priceMintX;
+let publicSaleActiveX;
+
 ////////////////////////////////////////////
 // FUNCTIONS //
 ////////////////////////////////////////////
@@ -96805,6 +96821,18 @@ const wlChecks = async function () {
   console.log(`maxMint : ${maxMint}`);
 };
 
+const updateData = async function () {
+  // const account = (await web3.eth.getAccounts())[0];
+  const freeSupplyX = await myContract.methods.freeSupply().call();
+  // const freeMintedX = await myContract.methods.freeMinted(account).call();
+  // const mintedFreeSupplyX = await myContract.methods.mintedFreeSupply().call();
+  // const freeMaxMintsX = await myContract.methods.FREE_MAX_MINTS().call();
+  // const mintedAccX = await myContract.methods.numberMinted(account).call();
+  // const priceMintX = await myContract.methods.price().call();
+  // const publicSaleActiveX = await myContract.methods.publicSaleActive().call();
+  return freeSupplyX;
+};
+
 const displayPrice = async function () {
   const account = (await web3.eth.getAccounts())[0];
   let proof = getMerkleProof(account[0], merkleTree);
@@ -96817,9 +96845,14 @@ const displayPrice = async function () {
   const mintedAcc = await myContract.methods.numberMinted(account).call();
   const priceMint = await myContract.methods.price().call();
   const quantMintNum = Number(quantMint.textContent);
+  const publicSaleActive = await myContract.methods.publicSaleActive().call();
   // supply 333/333 or free minted
   if (mintedFreeSupply >= freeSupply || freeMinted || (proofPayed && !proof)) {
     maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+    mintPrice.textContent = mintPriceTx / 10 ** 18;
+  } else if (publicSaleActive) {
+    maxMint = publicMaxMints;
     mintPriceTx = quantMintNum * priceMint;
     mintPrice.textContent = mintPriceTx / 10 ** 18;
   } else {
@@ -96978,5 +97011,19 @@ mintButton.addEventListener("click", function () {
     .then((r) => console.log(r));
 });
 wlChecks();
+
+console.log(`free supp antes${freeSupply}`);
+freeSupply = updateData();
+console.log(`free supp dsps${freeSupply}`);
+// updateData().then((param) => {
+//   freeSupply = freeSupplyX;
+//   freeMinted = freeMintedX;
+//   mintedFreeSupply = mintedFreeSupplyX;
+//   freeMaxMints = freeMaxMintsX;
+//   mintedAcc = mintedAccX;
+//   priceMint = priceMintX;
+//   publicSaleActive = publicSaleActiveX;
+//   console.log(freeSupply, mintedFreeSupply, publicSaleActive);
+// });
 
 },{"keccak256":546,"merkletreejs":557,"web3":705}]},{},[716]);

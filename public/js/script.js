@@ -611,9 +611,14 @@ const displayPrice = async function () {
   const mintedAcc = await myContract.methods.numberMinted(account).call();
   const priceMint = await myContract.methods.price().call();
   const quantMintNum = Number(quantMint.textContent);
+  const publicSaleActive = await myContract.methods.publicSaleActive().call();
   // supply 333/333 or free minted
   if (mintedFreeSupply >= freeSupply || freeMinted || (proofPayed && !proof)) {
     maxMint = freeMaxMints - mintedAcc;
+    mintPriceTx = quantMintNum * priceMint;
+    mintPrice.textContent = mintPriceTx / 10 ** 18;
+  } else if (publicSaleActive) {
+    maxMint = publicMaxMints;
     mintPriceTx = quantMintNum * priceMint;
     mintPrice.textContent = mintPriceTx / 10 ** 18;
   } else {
