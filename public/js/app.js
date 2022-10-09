@@ -1,7 +1,7 @@
 const mintWindow = document.querySelector(".mint-window");
 const overlay = document.querySelector(".overlay");
 const closeMintButton = document.querySelector(".close-mint");
-const mintPrice = document.querySelector(".mint-price");
+// const mintPrice = document.querySelector(".mint-price");
 
 const tapir1 = document.querySelector(".tapir-1");
 const tapir2 = document.querySelector(".tapir-2");
