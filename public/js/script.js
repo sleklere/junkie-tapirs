@@ -2,6 +2,20 @@ const keccak256 = require("keccak256");
 const Web3 = require("web3");
 const { MerkleTree } = require("merkletreejs");
 
+///////////////////////////////////
+
+let freeSupply;
+let freeMinted;
+let mintedFreeSupply;
+let mintedAcc;
+let priceMint;
+let publicSaleActive;
+let WLSaleActive;
+let account;
+let maxSupply;
+let totalSupply;
+let freeMaxMints;
+
 // browserify script.js | uglifyjs > bundle.js
 
 window.web3 = new Web3(window.ethereum);
@@ -567,6 +581,20 @@ const rmMintQ = document.querySelector(".rm-circle");
 ////////////////////////////////////////////
 // FUNCTIONS //
 ////////////////////////////////////////////
+
+const updateData = async function () {
+  freeSupply = await myContract.methods.freeSupply().call();
+  freeMinted = await myContract.methods.freeMinted(account).call();
+  mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  mintedAcc = await myContract.methods.numberMinted(account).call();
+  priceMint = await myContract.methods.price().call();
+  publicSaleActive = await myContract.methods.publicSaleActive().call();
+  WLSaleActive = await myContract.methods.WLSaleActive().call();
+  maxSupply = await myContract.methods.maxSupply().call();
+  totalSupply = await myContract.methods.totalSupply().call();
+  freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+};
+
 function getMerkleProof(address, tree) {
   const hashedAddress = keccak256(address);
   return tree.getHexProof(hashedAddress);
@@ -575,14 +603,14 @@ function getMerkleProof(address, tree) {
 async function connectWallet() {
   if (window.ethereum) {
     await window.ethereum.request({ method: "eth_requestAccounts" });
-    const walletAddress = (await web3.eth.getAccounts())[0];
-    buttonConnect.textContent = `${walletAddress.slice(
-      0,
-      6
-    )}...${walletAddress.slice(-4)}`;
+    account = (await web3.eth.getAccounts())[0];
+    buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     buttonConnect.classList.add("connected");
-    console.log(`Wallet connected: ${walletAddress}`);
+    console.log(`Wallet connected: ${account}`);
     web3.eth.getChainId().then(console.log);
+    updateData().then((a) => {
+      openMintWindow.disabled = false;
+    });
   } else {
     console.log("No wallet");
   }
@@ -619,7 +647,7 @@ const checkAndSwitch = async () => {
 
 const checkAcc = async () => {
   window.web3 = new Web3(window.ethereum);
-  const account = (await web3.eth.getAccounts())[0];
+  account = (await web3.eth.getAccounts())[0];
   console.log(`Account connected: ${account}`);
   // if there is an account connected
   if (account != undefined) {
@@ -627,26 +655,40 @@ const checkAcc = async () => {
     checkAndSwitch();
     buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     buttonConnect.classList.add("connected");
+    updateData().then((a) => {
+      openMintWindow.disabled = false;
+      console.log(
+        WLSaleActive,
+        publicSaleActive,
+        freeSupply,
+        freeMinted,
+        mintedAcc
+      );
+    });
   }
 };
 
-const showMintedSupply = async function () {
-  maxSupplyEl.textContent = await myContract.methods.maxSupply().call();
-  mintedEl.textContent = await myContract.methods.totalSupply().call();
-  freeMaxSupplyEl.textContent = await myContract.methods.freeSupply().call();
-  freeMintedEl.textContent = await myContract.methods.mintedFreeSupply().call();
+const showMintedSupply = function () {
+  // maxSupplyEl.textContent = await myContract.methods.maxSupply().call();
+  // mintedEl.textContent = await myContract.methods.totalSupply().call();
+  // freeMaxSupplyEl.textContent = await myContract.methods.freeSupply().call();
+  // freeMintedEl.textContent = await myContract.methods.mintedFreeSupply().call();
+  maxSupplyEl.textContent = maxSupply;
+  mintedEl.textContent = totalSupply;
+  freeMaxSupplyEl.textContent = freeSupply;
+  freeMintedEl.textContent = mintedFreeSupply;
 };
 
 const displayPrice = async function () {
-  const account = (await web3.eth.getAccounts())[0];
+  // const account = (await web3.eth.getAccounts())[0];
 
   const quantMintNum = Number(quantMint.textContent);
 
-  const freeSupply = await myContract.methods.freeSupply().call();
-  const freeMinted = await myContract.methods.freeMinted(account).call();
-  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  const priceMint = await myContract.methods.price().call();
-  const publicSaleActive = await myContract.methods.publicSaleActive().call();
+  // const freeSupply = await myContract.methods.freeSupply().call();
+  // const freeMinted = await myContract.methods.freeMinted(account).call();
+  // const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  // const priceMint = await myContract.methods.price().call();
+  // const publicSaleActive = await myContract.methods.publicSaleActive().call();
   let mintPriceTx;
   // supply 333/333 or free minted
   if (mintedFreeSupply >= freeSupply || freeMinted || (proofPayed && !proof)) {
@@ -664,14 +706,14 @@ const displayPrice = async function () {
 };
 
 const setMaxMint = async function () {
-  const account = (await web3.eth.getAccounts())[0];
+  // const account = (await web3.eth.getAccounts())[0];
 
-  const freeSupply = await myContract.methods.freeSupply().call();
-  const freeMinted = await myContract.methods.freeMinted(account).call();
-  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  const mintedAcc = await myContract.methods.numberMinted(account).call();
-  const publicSaleActive = await myContract.methods.publicSaleActive().call();
+  // const freeSupply = await myContract.methods.freeSupply().call();
+  // const freeMinted = await myContract.methods.freeMinted(account).call();
+  // const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  // const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+  // const mintedAcc = await myContract.methods.numberMinted(account).call();
+  // const publicSaleActive = await myContract.methods.publicSaleActive().call();
 
   // supply 333/333 or free minted
   if (mintedFreeSupply >= freeSupply || freeMinted || (proofPayed && !proof)) {
@@ -689,20 +731,21 @@ const setMaxMint = async function () {
 ////////////////////////////////////////////
 
 openMintWindow.addEventListener("click", async function () {
-  const WLSaleActive = await myContract.methods.WLSaleActive().call();
-  const publicSaleActive = await myContract.methods.publicSaleActive().call();
-  const account = await web3.eth.getAccounts();
+  // WLSaleActive = await myContract.methods.WLSaleActive().call();
+  // publicSaleActive = await myContract.methods.publicSaleActive().call();
+  // const account = (await web3.eth.getAccounts())[0];
 
-  proof = getMerkleProof(account[0], merkleTree);
+  proof = getMerkleProof(account, merkleTree);
   // proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
   console.log(`proof mintwindow: ${proof}`);
 
-  proofPayed = getMerkleProof(account[0], merkleTree2);
+  proofPayed = getMerkleProof(account, merkleTree2);
   // proofPayed.length > 1
   //   ? (proofPayed = proofPayed.join(", "))
   //   : (proofPayed = proofPayed[0]);
   console.log(`proofPayed mintwindow: ${proofPayed}`);
 
+  console.log(WLSaleActive, publicSaleActive);
   showMintedSupply();
   if (
     ((proof && proof.length >= 1) || (proofPayed && proofPayed.length >= 1)) &&
@@ -745,8 +788,10 @@ buttonConnect.addEventListener("click", function () {
 });
 
 window.ethereum.on("accountsChanged", async () => {
+  openMintWindow.disabled = true;
   console.log("acount state changed");
-  const account = await web3.eth.getAccounts();
+  account = await web3.eth.getAccounts();
+  quantMint.textContent = "1";
   if (account) {
     checkAcc();
   } else {
