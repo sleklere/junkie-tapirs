@@ -17,6 +17,7 @@ let totalSupply;
 let freeMaxMints;
 
 // browserify script.js | uglifyjs > bundle.js
+// browserify script.js > bundle.js
 
 window.web3 = new Web3(window.ethereum);
 const jsonInterface = [
@@ -791,9 +792,9 @@ buttonConnect.addEventListener("click", function () {
 window.ethereum.on("accountsChanged", async () => {
   openMintWindow.disabled = true;
   console.log("acount state changed");
-  account = await web3.eth.getAccounts()[0];
+  account = await web3.eth.getAccounts();
   quantMint.textContent = "1";
-  if (account) {
+  if (account[0]) {
     checkAcc();
   } else {
     console.log("no account");
