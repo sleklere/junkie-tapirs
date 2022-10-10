@@ -96811,6 +96811,7 @@ async function connectWallet() {
     buttonConnect.classList.add("connected");
     console.log(`Wallet connected: ${account}`);
     web3.eth.getChainId().then(console.log);
+    await checkAndSwitch();
     updateData().then((a) => {
       openMintWindow.disabled = false;
     });
@@ -96843,13 +96844,13 @@ const checkAndSwitch = async () => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: "0x5" }],
     });
-    myContract = new web3.eth.Contract(
-      jsonInterface,
-      "0xA460c864edf6c4BdA1eF9666F9B6E25B26793Ad0"
-    );
     // refresh page
     window.location.reload();
   }
+  myContract = new web3.eth.Contract(
+    jsonInterface,
+    "0xA460c864edf6c4BdA1eF9666F9B6E25B26793Ad0"
+  );
 };
 
 const checkAcc = async () => {
@@ -96859,7 +96860,7 @@ const checkAcc = async () => {
   // if there is an account connected
   if (account != undefined) {
     // checks for network and switches if needed
-    checkAndSwitch();
+    await checkAndSwitch();
     buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     buttonConnect.classList.add("connected");
     updateData().then((a) => {
@@ -96991,13 +96992,12 @@ addMintQ.addEventListener("click", function () {
 
 buttonConnect.addEventListener("click", function () {
   connectWallet();
-  checkAndSwitch();
 });
 
 window.ethereum.on("accountsChanged", async () => {
   openMintWindow.disabled = true;
   console.log("acount state changed");
-  account = await web3.eth.getAccounts();
+  account = await web3.eth.getAccounts()[0];
   quantMint.textContent = "1";
   if (account) {
     checkAcc();
