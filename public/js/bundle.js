@@ -96717,10 +96717,7 @@ const jsonInterface = [
     type: "function",
   },
 ];
-const myContract = new web3.eth.Contract(
-  jsonInterface,
-  "0xA460c864edf6c4BdA1eF9666F9B6E25B26793Ad0"
-);
+let myContract;
 
 let maxMint = 1;
 
@@ -96846,6 +96843,10 @@ const checkAndSwitch = async () => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: "0x5" }],
     });
+    myContract = new web3.eth.Contract(
+      jsonInterface,
+      "0xA460c864edf6c4BdA1eF9666F9B6E25B26793Ad0"
+    );
     // refresh page
     window.location.reload();
   }
