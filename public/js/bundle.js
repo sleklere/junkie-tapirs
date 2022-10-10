@@ -47491,8 +47491,8 @@ var TransactionFactory = /** @class */ (function () {
 }());
 exports.default = TransactionFactory;
 
-}).call(this)}).call(this,{"isBuffer":require("C:/Users/slekl/AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{".":300,"C:/Users/slekl/AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js":152,"ethereumjs-util":516}],303:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../../AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{".":300,"../../../../../../../AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js":152,"ethereumjs-util":516}],303:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.N_DIV_2 = exports.isAccessList = exports.isAccessListBuffer = exports.Capability = void 0;
@@ -67682,8 +67682,8 @@ var assertIsString = function (input) {
 };
 exports.assertIsString = assertIsString;
 
-}).call(this)}).call(this,{"isBuffer":require("C:/Users/slekl/AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"./internal":517,"C:/Users/slekl/AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js":152}],516:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("../../../../../../AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../AppData/Roaming/npm/node_modules/browserify/node_modules/is-buffer/index.js":152,"./internal":517}],516:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -96849,28 +96849,46 @@ const showMintedSupply = async function () {
 const displayPrice = async function () {
   const account = (await web3.eth.getAccounts())[0];
 
+  const quantMintNum = Number(quantMint.textContent);
+
   const freeSupply = await myContract.methods.freeSupply().call();
   const freeMinted = await myContract.methods.freeMinted(account).call();
   const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  const mintedAcc = await myContract.methods.numberMinted(account).call();
   const priceMint = await myContract.methods.price().call();
   const publicSaleActive = await myContract.methods.publicSaleActive().call();
   let mintPriceTx;
   // supply 333/333 or free minted
   if (mintedFreeSupply >= freeSupply || freeMinted || (proofPayed && !proof)) {
-    maxMint = freeMaxMints - mintedAcc;
     mintPriceTx = quantMintNum * priceMint;
     mintPrice.textContent = mintPriceTx / 10 ** 18;
   } else if (publicSaleActive) {
-    maxMint = publicMaxMints;
     mintPriceTx = quantMintNum * priceMint;
     mintPrice.textContent = mintPriceTx / 10 ** 18;
   } else {
-    maxMint = freeMaxMints - mintedAcc;
     mintPriceTx = (quantMintNum - 1) * priceMint;
     mintPrice.textContent =
       quantMintNum == 1 ? "Free!" : mintPriceTx / 10 ** 18;
+  }
+  return mintPriceTx;
+};
+
+const setMaxMint = async function () {
+  const account = (await web3.eth.getAccounts())[0];
+
+  const freeSupply = await myContract.methods.freeSupply().call();
+  const freeMinted = await myContract.methods.freeMinted(account).call();
+  const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+  const mintedAcc = await myContract.methods.numberMinted(account).call();
+  const publicSaleActive = await myContract.methods.publicSaleActive().call();
+
+  // supply 333/333 or free minted
+  if (mintedFreeSupply >= freeSupply || freeMinted || (proofPayed && !proof)) {
+    maxMint = freeMaxMints - mintedAcc;
+  } else if (publicSaleActive) {
+    maxMint = publicMaxMints;
+  } else {
+    maxMint = freeMaxMints - mintedAcc;
   }
   console.log(`maxMint : ${maxMint}`);
 };
@@ -96899,6 +96917,7 @@ openMintWindow.addEventListener("click", function () {
       mintWindow.classList.remove("hidden");
       overlay.classList.remove("hidden");
       showMintedSupply();
+      setMaxMint();
       displayPrice();
     } else {
       // alert("Sorry! Your are not whitelisted!");
@@ -96916,7 +96935,7 @@ rmMintQ.addEventListener("click", function () {
   const value = Number(quantMint.textContent);
   if (value > 1) quantMint.textContent = value - 1;
   const quantMintNum = Number(quantMint.textContent);
-  console.log(quantMintNum);
+  // console.log(quantMintNum);
   displayPrice();
 });
 
@@ -96924,7 +96943,7 @@ addMintQ.addEventListener("click", function () {
   const value = Number(quantMint.textContent);
   if (value < maxMint) quantMint.textContent = value + 1;
   const quantMintNum = Number(quantMint.textContent);
-  console.log(quantMintNum);
+  // console.log(quantMintNum);
   displayPrice();
 });
 
@@ -96935,16 +96954,24 @@ buttonConnect.addEventListener("click", function () {
 
 window.ethereum.on("accountsChanged", async () => {
   console.log("acount state changed");
-  buttonConnect.classList.remove("connected");
-  buttonConnect.textContent = "Connect Wallet";
+  const account = await web3.eth.getAccounts();
+  if (account) {
+    checkAcc();
+  } else {
+    console.log("no account");
+    buttonConnect.classList.remove("connected");
+    buttonConnect.textContent = "Connect Wallet";
+  }
 });
 
 // listener for mint button to send TX
-mintButton.addEventListener("click", function () {
+mintButton.addEventListener("click", async function () {
+  const price = await displayPrice();
+  const account = (await web3.eth.getAccounts())[0];
   console.log(quantMintNum);
   myContract.methods
     .freeMint(quantMintNum, proof)
-    .send({ from: account, value: mintPriceTx })
+    .send({ from: account, value: price })
     .then((r) => console.log(r));
 });
 
