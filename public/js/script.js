@@ -2361,12 +2361,12 @@ let paidWlAddresses = [
 
 const leafNodes = freeWlAddresses.map((addr) => keccak256(addr));
 const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
-const rootHash = merkleTree.getRoot();
-// console.log(rootHash);
+const rootHash = merkleTree.getRoot().toString("hex");
+console.log("root", rootHash);
 
 const leafNodes2 = paidWlAddresses.map((addr) => keccak256(addr));
 const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: true });
-const rootHash2 = merkleTree2.getRoot();
+const rootHash2 = merkleTree2.getRoot().toString("hex");
 
 let proof;
 let proofPaid;
