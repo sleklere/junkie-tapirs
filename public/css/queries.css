@@ -121,6 +121,10 @@
   .click-me {
     right: -10%;
   }
+
+  .mint-window {
+    max-height: 42rem;
+  }
 }
 
 /* 470px */
@@ -182,7 +186,7 @@
   .mint-window {
     gap: 2rem;
     height: 80%;
-    max-height: unset;
+    max-height: 70vh;
   }
   .mint-sub-container {
     flex-direction: column;
@@ -233,5 +237,11 @@
   .click-me {
     right: 5%;
     font-size: 1.8rem;
+  }
+
+  .proof-p {
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
   }
 }

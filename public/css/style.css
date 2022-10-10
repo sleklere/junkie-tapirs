@@ -95,7 +95,7 @@ body {
   transform: translate(-50%, -50%);
   padding: 3rem;
   max-width: 90rem;
-  max-height: 40rem;
+  max-height: 41rem;
 
   background: linear-gradient(to bottom right, #fcc419, #f08c00);
   border-radius: 20px;
@@ -201,11 +201,44 @@ body {
   background-color: #222 !important;
   color: #fff;
   padding: 1.5rem !important;
+  transition: all 0.4s;
+}
+
+.btn-mint-action:hover,
+.copy-proof:hover {
+  cursor: pointer;
+  background-color: #444 !important;
 }
 
 .secret-tapir {
   height: 15rem;
   border-radius: 20%;
+}
+
+.proof-p {
+  display: flex;
+  align-items: center;
+}
+
+.proof {
+  padding-bottom: 0.5rem;
+  /* text-align: center; */
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-left: 1rem;
+}
+
+.copy-proof {
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  margin-left: 0.5rem;
+  transition: all 0.4s;
 }
 
 /* ////////////////////// */
