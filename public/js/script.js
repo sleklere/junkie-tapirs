@@ -3,10 +3,8 @@ const Web3 = require("web3");
 const { MerkleTree } = require("merkletreejs");
 
 // browserify script.js | uglifyjs > bundle.js
-// contrato --> 0x53E0CC4c51DcEC811C44e6Da0e72a6576e4C44c3
 
 window.web3 = new Web3(window.ethereum);
-
 const jsonInterface = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   { inputs: [], name: "ApprovalCallerNotOwnerNorApproved", type: "error" },
@@ -499,7 +497,6 @@ const jsonInterface = [
     type: "function",
   },
 ];
-
 const myContract = new web3.eth.Contract(
   jsonInterface,
   "0xA460c864edf6c4BdA1eF9666F9B6E25B26793Ad0"
@@ -535,7 +532,7 @@ let testPayedWl = [
 const leafNodes = whitelistAddresses.map((addr) => keccak256(addr));
 const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 const rootHash = merkleTree.getRoot();
-console.log(rootHash);
+// console.log(rootHash);
 
 const leafNodes2 = testPayedWl.map((addr) => keccak256(addr));
 const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: true });
@@ -691,53 +688,54 @@ const setMaxMint = async function () {
 // EVENT LISTENERS //
 ////////////////////////////////////////////
 
-openMintWindow.addEventListener("click", function () {
-  (async () => {
-    const WLSaleActive = await myContract.methods.WLSaleActive().call();
-    const publicSaleActive = await myContract.methods.publicSaleActive().call();
-    const account = await web3.eth.getAccounts();
+openMintWindow.addEventListener("click", async function () {
+  const WLSaleActive = await myContract.methods.WLSaleActive().call();
+  const publicSaleActive = await myContract.methods.publicSaleActive().call();
+  const account = await web3.eth.getAccounts();
 
-    proof = getMerkleProof(account[0], merkleTree);
-    // proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
-    console.log(`proof mintwindow: ${proof}`);
+  proof = getMerkleProof(account[0], merkleTree);
+  // proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
+  console.log(`proof mintwindow: ${proof}`);
 
-    proofPayed = getMerkleProof(account[0], merkleTree2);
-    // proofPayed.length > 1
-    //   ? (proofPayed = proofPayed.join(", "))
-    //   : (proofPayed = proofPayed[0]);
-    console.log(`proofPayed mintwindow: ${proofPayed}`);
+  proofPayed = getMerkleProof(account[0], merkleTree2);
+  // proofPayed.length > 1
+  //   ? (proofPayed = proofPayed.join(", "))
+  //   : (proofPayed = proofPayed[0]);
+  console.log(`proofPayed mintwindow: ${proofPayed}`);
 
-    if (proof && proof.length >= 1 && (WLSaleActive || publicSaleActive)) {
-      mintWindow.classList.remove("hidden");
-      overlay.classList.remove("hidden");
-      showMintedSupply();
-      setMaxMint();
-      displayPrice();
+  showMintedSupply();
+  if (
+    ((proof && proof.length >= 1) || (proofPayed && proofPayed.length >= 1)) &&
+    (WLSaleActive || publicSaleActive)
+  ) {
+    mintWindow.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+    setMaxMint();
+    displayPrice();
+  } else {
+    // alert("Sorry! Your are not whitelisted!");
+    mintWindow.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+    mintButton.classList.add("hidden");
+    mintAddRm.classList.add("hidden");
+    divPriceQuant.style.justifyContent = "center";
+    if (!WLSaleActive && !publicSaleActive) {
+      mintPrice.textContent = "Sale closed!";
     } else {
-      // alert("Sorry! Your are not whitelisted!");
-      mintWindow.classList.remove("hidden");
-      overlay.classList.remove("hidden");
-      mintButton.classList.add("hidden");
-      mintAddRm.classList.add("hidden");
-      divPriceQuant.style.justifyContent = "center";
       mintPrice.textContent = "Not whitelisted!";
     }
-  })();
+  }
 });
 
 rmMintQ.addEventListener("click", function () {
   const value = Number(quantMint.textContent);
   if (value > 1) quantMint.textContent = value - 1;
-  const quantMintNum = Number(quantMint.textContent);
-  // console.log(quantMintNum);
   displayPrice();
 });
 
 addMintQ.addEventListener("click", function () {
   const value = Number(quantMint.textContent);
   if (value < maxMint) quantMint.textContent = value + 1;
-  const quantMintNum = Number(quantMint.textContent);
-  // console.log(quantMintNum);
   displayPrice();
 });
 
