@@ -631,16 +631,20 @@ const checkNetwork = async () => {
 };
 
 const checkAndSwitch = async () => {
-  const correctNetwork = await checkNetwork();
   // console.log(correctNetwork);
+  const correctNetwork = await checkNetwork();
   if (!correctNetwork) {
     console.log("Incorrect network! Changing now");
-    await window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0x5" }],
-    });
+    try {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x5" }],
+      });
+    } catch (err) {
+      alert(err.message);
+    }
     // refresh page
-    window.location.reload();
+    // window.location.reload();
   }
   myContract = new web3.eth.Contract(
     jsonInterface,

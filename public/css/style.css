@@ -81,6 +81,11 @@ body {
   background-color: #b08912;
 }
 
+.btn-mint:disabled:hover {
+  cursor: auto;
+  background-color: #fcc419;
+}
+
 .mint-window {
   position: absolute;
   top: 50%;
@@ -90,7 +95,7 @@ body {
   transform: translate(-50%, -50%);
   padding: 3rem;
   max-width: 90rem;
-  max-height: 45rem;
+  max-height: 40rem;
 
   background: linear-gradient(to bottom right, #fcc419, #f08c00);
   border-radius: 20px;
@@ -137,11 +142,6 @@ body {
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(3px);
   z-index: 5;
-}
-
-.mint-description {
-  font-size: 2.5rem;
-  text-align: center;
 }
 
 .minted--supply {
