@@ -176,6 +176,7 @@ body {
   color: #222;
   word-spacing: -2rem;
   text-align: center;
+  user-select: none;
 }
 
 .add-rm-mint {
@@ -187,6 +188,7 @@ body {
 
 .q-mint {
   font-size: 2.5rem;
+  user-select: none;
 }
 
 .circle-icon {
@@ -202,6 +204,7 @@ body {
   color: #fff;
   padding: 1.5rem !important;
   transition: all 0.4s;
+  user-select: none;
 }
 
 .btn-mint-action:hover,
@@ -213,11 +216,16 @@ body {
 .secret-tapir {
   height: 15rem;
   border-radius: 20%;
+  user-select: none;
 }
 
 .proof-p {
   display: flex;
   align-items: center;
+}
+
+.proof-p span:first-child {
+  user-select: none;
 }
 
 .proof {
@@ -227,6 +235,7 @@ body {
   border-radius: 6px;
   padding: 0.5rem;
   margin-left: 1rem;
+  user-select: none;
 }
 
 .copy-proof {

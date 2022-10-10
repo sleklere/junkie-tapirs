@@ -2515,14 +2515,14 @@ const displayPrice = async function () {
   // supply 333/333 or free minted
   if (mintedFreeSupply >= freeSupply || freeMinted || (proofPaid && !proof)) {
     mintPriceTx = quantMintNum * priceMint;
-    mintPrice.textContent = mintPriceTx / 10 ** 18;
+    mintPrice.textContent = mintPriceTx / 10 ** 18 + "Ξ";
   } else if (publicSaleActive) {
     mintPriceTx = quantMintNum * priceMint;
-    mintPrice.textContent = mintPriceTx / 10 ** 18;
+    mintPrice.textContent = mintPriceTx / 10 ** 18 + "Ξ";
   } else {
     mintPriceTx = (quantMintNum - 1) * priceMint;
     mintPrice.textContent =
-      quantMintNum == 1 ? "Free!" : mintPriceTx / 10 ** 18;
+      quantMintNum == 1 ? "Free!" : mintPriceTx / 10 ** 18 + "Ξ";
   }
   return mintPriceTx;
 };
