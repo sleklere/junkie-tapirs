@@ -19626,7 +19626,7 @@ let freeWlAddresses = [
   "0xF1cD9C6Cb6c42b49a013321a82e1A1C10A36a735",
   "0x63Ca7A3F3c2984a286EB3be6afe011Ed6a5131df",
   "0x3826335E2bc15Ffa99Bf697c28352C7E871a228b",
-  "0x36e99c9de23d07f67F06fA475D2b605279b52050",
+  // "0x36e99c9de23d07f67F06fA475D2b605279b52050",
   "0xb485a46a59B206d5C30Ad6c814E2e3373F132dd9",
   "0xaAaaD83aCFfc24f0682CfcaDAf1Fc41508aFc3e4",
   "0xe1D6bb8F54E345C1106C22958EFB815Dea616019",
@@ -21287,15 +21287,16 @@ let paidWlAddresses = [
   "0xffa46b53b533721db89931ea8bed50a7fdf9ee2b",
   "0xffff41988852d624b0e640e895eb4d18f7da077e",
   "0x731f7fbf884d33A3352785dc199f317abe64DB4b",
+  "0x36e99c9de23d07f67F06fA475D2b605279b52050",
 ];
 
 const leafNodes = freeWlAddresses.map((addr) => keccak256(addr));
-const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: false });
+const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 const rootHash = merkleTree.getRoot().toString("hex");
 console.log("root", rootHash);
 
 const leafNodes2 = paidWlAddresses.map((addr) => keccak256(addr));
-const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: false });
+const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: true });
 const rootHash2 = merkleTree2.getRoot().toString("hex");
 
 let proof;
@@ -21309,6 +21310,8 @@ let proofPaid;
 
 const openMintWindow = document.querySelector(".btn-mint");
 const buttonConnect = document.querySelector(".btn-connect-wallet");
+const btnConnectSmall = document.querySelector(".btn-connect");
+
 const mintButton = document.querySelector(".btn-mint-action");
 const mintAddRm = document.querySelector(".add-rm-mint");
 const mintPrice = document.querySelector(".mint-price");
@@ -21356,6 +21359,11 @@ async function connectWallet() {
     account = (await web3.eth.getAccounts())[0];
     buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     buttonConnect.classList.add("connected");
+    // button that appears in a tablet/phone querie
+    btnConnectSmall.textContent = `${account.slice(0, 6)}...${account.slice(
+      -4
+    )}`;
+    btnConnectSmall.classList.add("connected");
     console.log(`Wallet connected: ${account}`);
     web3.eth.getChainId().then(console.log);
     await checkAndSwitch();
@@ -21414,6 +21422,11 @@ const checkAcc = async () => {
     await checkAndSwitch();
     buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     buttonConnect.classList.add("connected");
+    // button that appears in a tablet/phone querie
+    btnConnectSmall.textContent = `${account.slice(0, 6)}...${account.slice(
+      -4
+    )}`;
+    btnConnectSmall.classList.add("connected");
     updateData().then((a) => {
       openMintWindow.disabled = false;
     });
@@ -21421,10 +21434,6 @@ const checkAcc = async () => {
 };
 
 const showMintedSupply = function () {
-  // maxSupplyEl.textContent = await myContract.methods.maxSupply().call();
-  // mintedEl.textContent = await myContract.methods.totalSupply().call();
-  // freeMaxSupplyEl.textContent = await myContract.methods.freeSupply().call();
-  // freeMintedEl.textContent = await myContract.methods.mintedFreeSupply().call();
   maxSupplyEl.textContent = maxSupply;
   mintedEl.textContent = totalSupply;
   freeMaxSupplyEl.textContent = freeSupply;
@@ -21485,18 +21494,11 @@ const setMaxMint = async function () {
 let proofDisplayed;
 let finalProof;
 openMintWindow.addEventListener("click", async function () {
-  // WLSaleActive = await myContract.methods.WLSaleActive().call();
-  // publicSaleActive = await myContract.methods.publicSaleActive().call();
-  // const account = (await web3.eth.getAccounts())[0];
-
   proof = getMerkleProof(account, merkleTree);
-  // proof.length > 1 ? (proof = proof.join(", ")) : (proof = proof[0]);
   console.log(`proof mintwindow: ${proof}`);
+  console.log(`proof mintwindow[0]: ${proof[0]}`);
 
   proofPaid = getMerkleProof(account, merkleTree2);
-  // proofPaid.length > 1
-  //   ? (proofPaid = proofPaid.join(", "))
-  //   : (proofPaid = proofPaid[0]);
   console.log(`proofPaid mintwindow: ${proofPaid}`);
 
   console.log(WLSaleActive, publicSaleActive);
@@ -21507,7 +21509,7 @@ openMintWindow.addEventListener("click", async function () {
   ) {
     finalProof = `${proof ? proof.join(", ") : proofPaid.join(", ")}`;
     proofDisplayed = `${
-      proof ? proof[0].slice(0, 8) : proofPaid[0].slice(0, 8)
+      proof.length >= 1 ? proof[0].slice(0, 8) : proofPaid[0].slice(0, 8)
     }...`;
     proofEl.textContent = proofDisplayed;
     mintWindow.classList.remove("hidden");
@@ -21515,8 +21517,9 @@ openMintWindow.addEventListener("click", async function () {
     setMaxMint();
     displayPrice();
     setInterval(() => {
-      console.log("updat data int");
+      console.log("30s interval: updating info");
       updateData();
+      showMintedSupply();
     }, 30 * 1000);
   } else {
     // alert("Sorry! Your are not whitelisted!");
@@ -21549,6 +21552,10 @@ buttonConnect.addEventListener("click", function () {
   connectWallet();
 });
 
+btnConnectSmall.addEventListener("click", function () {
+  connectWallet();
+});
+
 window.ethereum.on("accountsChanged", async () => {
   openMintWindow.disabled = true;
   console.log("acount state changed");
@@ -21560,7 +21567,13 @@ window.ethereum.on("accountsChanged", async () => {
     console.log("no account");
     buttonConnect.classList.remove("connected");
     buttonConnect.textContent = "Connect Wallet";
+    // button that appears in a tablet/phone querie
+    btnConnectSmall.textContent = `${account.slice(0, 6)}...${account.slice(
+      -4
+    )}`;
+    btnConnectSmall.classList.add("connected");
   }
+  window.location.reload();
 });
 
 // listener for mint button to send TX
