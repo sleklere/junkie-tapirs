@@ -324,6 +324,13 @@ const jsonInterface = [
     type: "function",
   },
   {
+    inputs: [{ internalType: "address", name: "owner", type: "address" }],
+    name: "publicMinted",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "publicSaleActive",
     outputs: [{ internalType: "bool", name: "", type: "bool" }],
@@ -2370,6 +2377,7 @@ console.log("root", rootHash);
 const leafNodes2 = paidWlAddresses.map((addr) => keccak256(addr));
 const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: true });
 const rootHash2 = merkleTree2.getRoot().toString("hex");
+console.log("root paid", rootHash2);
 
 let proof;
 let proofPaid;
@@ -2381,12 +2389,17 @@ let proofPaid;
 ////////////////////////////////////////////
 
 const openMintWindow = document.querySelector(".btn-mint");
+const overlay = document.querySelector(".overlay");
+const closeMintButton = document.querySelector(".close-mint");
+
+const mintWindow = document.querySelector(".mint-window");
+
 const buttonConnect = document.querySelector(".btn-connect-wallet");
 const btnConnectSmall = document.querySelector(".btn-connect");
 
-const mintButton = document.querySelector(".btn-mint-action");
 const mintAddRm = document.querySelector(".add-rm-mint");
 const mintPrice = document.querySelector(".mint-price");
+const mintButton = document.querySelector(".btn-mint-action");
 
 const maxSupplyEl = document.querySelector(".max-supply");
 const mintedEl = document.querySelector(".minted");
@@ -2401,6 +2414,11 @@ const rmMintQ = document.querySelector(".rm-circle");
 
 const proofEl = document.querySelector(".proof");
 const copyProofBtn = document.querySelector(".copy-proof");
+
+const pendingMintNotif = document.querySelector(".mint-notif");
+const notifText = document.querySelector(".notif-text");
+const notifHash = document.querySelector(".notif-hash");
+const gifLoadingMint = document.querySelector(".gif-loading-mint");
 
 ////////////////////////////////////////////
 // FUNCTIONS //
@@ -2481,7 +2499,7 @@ const checkAndSwitch = async () => {
   }
   myContract = new web3.eth.Contract(
     jsonInterface,
-    "0xA460c864edf6c4BdA1eF9666F9B6E25B26793Ad0"
+    "0x3f6E095Fca12E85AC88c32C98a4B8f3D9c555887"
   );
 };
 
@@ -2519,10 +2537,15 @@ const showMintedSupply = function () {
 const displayPrice = async function () {
   const quantMintNum = Number(quantMint.textContent);
   let mintPriceTx;
-  // every scenario other than freeWl and no mints
+  if (
+    mintPrice.textContent == "Not whitelisted!" ||
+    mintPrice.textContent == "Sale closed!"
+  ) {
+    return;
+  }
   if (
     publicSaleActive ||
-    (proofPaid.length >= 1 && proof.length < 1) ||
+    typeof proofPaid !== "undefined" ||
     mintedFreeSupply >= freeSupply ||
     freeMinted
   ) {
@@ -2540,7 +2563,7 @@ const setMaxMint = async function () {
   // supply 333/333 or free minted
   if (publicSaleActive) {
     maxMint = publicMaxMints - mintedAcc;
-  } else if (proofPaid.length >= 1 && proof.length < 1) {
+  } else if (typeof proofPaid !== "undefined") {
     maxMint = WlMaxMints - mintedAcc;
   } else if (mintedFreeSupply >= freeSupply || freeMinted) {
     maxMint = freeMaxMints - mintedAcc;
@@ -2550,19 +2573,39 @@ const setMaxMint = async function () {
   console.log(`maxMint : ${maxMint}`);
 };
 
+const getReceipt = async function (hash) {
+  const receipt = await web3.eth.getTransactionReceipt(hash);
+  return receipt.status;
+};
+
 ////////////////////////////////////////////
 // EVENT LISTENERS //
 ////////////////////////////////////////////
 
 let proofDisplayed;
 let finalProof;
-openMintWindow.addEventListener("click", async function () {
-  proof = getMerkleProof(account, merkleTree);
-  console.log(`proof mintwindow: ${proof}`);
-  console.log(`proof mintwindow[0]: ${proof[0]}`);
+let updDataInterval;
 
-  proofPaid = getMerkleProof(account, merkleTree2);
-  console.log(`proofPaid mintwindow: ${proofPaid}`);
+updDataInterval = setInterval(() => {
+  console.log("30s interval: updating info");
+  updateData();
+  showMintedSupply();
+  setMaxMint();
+  displayPrice();
+}, 30000);
+
+openMintWindow.addEventListener("click", async function () {
+  if (freeWlAddresses.includes(account)) {
+    proof = getMerkleProof(account, merkleTree);
+    console.log(`proof mintwindow: ${proof}`);
+    console.log(`proof mintwindow[0]: ${proof[0]}`);
+    proofDisplayed = proof[0].slice(0, 8);
+  } else if (paidWlAddresses.includes(account)) {
+    proofPaid = getMerkleProof(account, merkleTree2);
+    console.log(`proofPaid mintwindow: ${proofPaid}`);
+    proofDisplayed = proofPaid[0].slice(0, 8);
+  }
+  proofEl.textContent = proofDisplayed;
 
   console.log(WLSaleActive, publicSaleActive);
   showMintedSupply();
@@ -2570,20 +2613,11 @@ openMintWindow.addEventListener("click", async function () {
     ((proof && proof.length >= 1) || (proofPaid && proofPaid.length >= 1)) &&
     (WLSaleActive || publicSaleActive)
   ) {
-    finalProof = `${proof ? proof.join(", ") : proofPaid.join(", ")}`;
-    proofDisplayed = `${
-      proof.length >= 1 ? proof[0].slice(0, 8) : proofPaid[0].slice(0, 8)
-    }...`;
-    proofEl.textContent = proofDisplayed;
+    finalProof = `${proof ? proof.join(",") : proofPaid.join(",")}`;
     mintWindow.classList.remove("hidden");
     overlay.classList.remove("hidden");
     setMaxMint();
     displayPrice();
-    setInterval(() => {
-      console.log("30s interval: updating info");
-      updateData();
-      showMintedSupply();
-    }, 30 * 1000);
   } else {
     // alert("Sorry! Your are not whitelisted!");
     mintWindow.classList.remove("hidden");
@@ -2597,6 +2631,16 @@ openMintWindow.addEventListener("click", async function () {
       mintPrice.textContent = "Not whitelisted!";
     }
   }
+});
+
+overlay.addEventListener("click", function () {
+  mintWindow.classList.add("hidden");
+  overlay.classList.add("hidden");
+});
+
+closeMintButton.addEventListener("click", function () {
+  mintWindow.classList.add("hidden");
+  overlay.classList.add("hidden");
 });
 
 rmMintQ.addEventListener("click", function () {
@@ -2639,17 +2683,87 @@ window.ethereum.on("accountsChanged", async () => {
   window.location.reload();
 });
 
+const postMint = function (status, hash) {
+  status = getReceipt(hash);
+  if (status == true) {
+    // success
+    console.log(`true?: ${status}`);
+    return;
+  } else if (status == false) {
+    console.log(`false?: ${status}`);
+    // failed
+    return;
+  }
+  console.log("timeout will run");
+  setTimeout(postMint(status), 2000);
+};
+
 // listener for mint button to send TX
 mintButton.addEventListener("click", async function () {
   const price = await displayPrice();
   const account = (await web3.eth.getAccounts())[0];
   console.log(quantMintNum);
+  pendingMintNotif.style.opacity = 1;
   myContract.methods
     .freeMint(quantMintNum, proof)
     .send({ from: account, value: price })
     .then((r) => {
       console.log(r);
-      displayPrice();
+      let status = r.status;
+      let hash = r.transactionHash;
+      // postMint(status, hash);
+
+      gifLoadingMint.classList.add("hidden");
+      // notifHash.textContent = "Check TX on Etherscan";
+      notifHash.setAttribute("href", `https://goerli.etherscan.io/tx/${hash}`);
+      notifHash.classList.remove("hidden");
+      if (status == true) {
+        // success
+        console.log(`true?: ${status}`);
+        notifText.textContent = "Mint successful!";
+        pendingMintNotif.style.background =
+          "linear-gradient(to bottom right, #00ff73, rgb(0, 159, 3))";
+      }
+      setTimeout(function () {
+        pendingMintNotif.style.opacity = 0;
+        notifHash.classList.add("hidden");
+        gifLoadingMint.classList.remove("hidden");
+        notifText.textContent = "Mint TX sent!";
+        pendingMintNotif.style.background =
+          "linear-gradient(to bottom right, #fca519, #f05c00);";
+      }, 10000);
+    })
+    .catch((err) => {
+      console.error(err);
+      console.log(err.message);
+      if (err.message.includes("Transaction has been reverted by the EVM")) {
+        const errorObj = JSON.parse(
+          err.message.slice(err.message.indexOf("{"))
+        );
+        console.log(errorObj);
+        if (errorObj.status == false) {
+          // failed
+          notifHash.setAttribute(
+            "href",
+            `https://goerli.etherscan.io/tx/${errorObj.transactionHash}`
+          );
+          notifHash.classList.remove("hidden");
+          console.log(`false?: ${errorObj.status}`);
+          notifText.textContent = "Mint failed!";
+          pendingMintNotif.style.background =
+            "linear-gradient(to bottom right, #fc1919, #680808);";
+          setTimeout(function () {
+            pendingMintNotif.style.opacity = 0;
+            notifHash.classList.add("hidden");
+            gifLoadingMint.classList.remove("hidden");
+            notifText.textContent = "Mint TX sent!";
+            pendingMintNotif.style.background =
+              "linear-gradient(to bottom right, #fca519, #f05c00);";
+          }, 10000);
+        }
+      } else {
+        pendingMintNotif.style.opacity = 0;
+      }
     });
 });
 
