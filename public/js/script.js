@@ -15,6 +15,7 @@ let account;
 let maxSupply;
 let totalSupply;
 let freeMaxMints;
+let WlMaxMints;
 
 // browserify script.js | uglifyjs > bundle.js
 // browserify script.js > bundle.js
@@ -697,7 +698,7 @@ let freeWlAddresses = [
   "0x63Ca7A3F3c2984a286EB3be6afe011Ed6a5131df",
   "0x3826335E2bc15Ffa99Bf697c28352C7E871a228b",
   // "0x36e99c9de23d07f67F06fA475D2b605279b52050",
-  "0xb485a46a59B206d5C30Ad6c814E2e3373F132dd9",
+  // "0xb485a46a59B206d5C30Ad6c814E2e3373F132dd9",
   "0xaAaaD83aCFfc24f0682CfcaDAf1Fc41508aFc3e4",
   "0xe1D6bb8F54E345C1106C22958EFB815Dea616019",
   "0x5a91330C1147fb936bf134Ef744988985e610a7d",
@@ -2358,6 +2359,7 @@ let paidWlAddresses = [
   "0xffff41988852d624b0e640e895eb4d18f7da077e",
   "0x731f7fbf884d33A3352785dc199f317abe64DB4b",
   "0x36e99c9de23d07f67F06fA475D2b605279b52050",
+  "0xb485a46a59B206d5C30Ad6c814E2e3373F132dd9",
 ];
 
 const leafNodes = freeWlAddresses.map((addr) => keccak256(addr));
@@ -2416,6 +2418,7 @@ const updateData = async function () {
   maxSupply = await myContract.methods.maxSupply().call();
   totalSupply = await myContract.methods.totalSupply().call();
   freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+  WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
 };
 
 function getMerkleProof(address, tree) {
@@ -2497,7 +2500,10 @@ const checkAcc = async () => {
       -4
     )}`;
     btnConnectSmall.classList.add("connected");
+    openMintWindow.style.padding = 0;
     updateData().then((a) => {
+      openMintWindow.style.padding = "1.25rem 1.5rem";
+      openMintWindow.textContent = "Mint!";
       openMintWindow.disabled = false;
     });
   }
@@ -2511,21 +2517,15 @@ const showMintedSupply = function () {
 };
 
 const displayPrice = async function () {
-  // const account = (await web3.eth.getAccounts())[0];
-
   const quantMintNum = Number(quantMint.textContent);
-
-  // const freeSupply = await myContract.methods.freeSupply().call();
-  // const freeMinted = await myContract.methods.freeMinted(account).call();
-  // const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  // const priceMint = await myContract.methods.price().call();
-  // const publicSaleActive = await myContract.methods.publicSaleActive().call();
   let mintPriceTx;
-  // supply 333/333 or free minted
-  if (mintedFreeSupply >= freeSupply || freeMinted || (proofPaid && !proof)) {
-    mintPriceTx = quantMintNum * priceMint;
-    mintPrice.textContent = mintPriceTx / 10 ** 18 + "Ξ";
-  } else if (publicSaleActive) {
+  // every scenario other than freeWl and no mints
+  if (
+    publicSaleActive ||
+    (proofPaid.length >= 1 && proof.length < 1) ||
+    mintedFreeSupply >= freeSupply ||
+    freeMinted
+  ) {
     mintPriceTx = quantMintNum * priceMint;
     mintPrice.textContent = mintPriceTx / 10 ** 18 + "Ξ";
   } else {
@@ -2537,20 +2537,13 @@ const displayPrice = async function () {
 };
 
 const setMaxMint = async function () {
-  // const account = (await web3.eth.getAccounts())[0];
-
-  // const freeSupply = await myContract.methods.freeSupply().call();
-  // const freeMinted = await myContract.methods.freeMinted(account).call();
-  // const mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  // const freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  // const mintedAcc = await myContract.methods.numberMinted(account).call();
-  // const publicSaleActive = await myContract.methods.publicSaleActive().call();
-
   // supply 333/333 or free minted
-  if (mintedFreeSupply >= freeSupply || freeMinted || (proofPaid && !proof)) {
+  if (publicSaleActive) {
+    maxMint = publicMaxMints - mintedAcc;
+  } else if (proofPaid.length >= 1 && proof.length < 1) {
+    maxMint = WlMaxMints - mintedAcc;
+  } else if (mintedFreeSupply >= freeSupply || freeMinted) {
     maxMint = freeMaxMints - mintedAcc;
-  } else if (publicSaleActive) {
-    maxMint = publicMaxMints;
   } else {
     maxMint = freeMaxMints - mintedAcc;
   }
