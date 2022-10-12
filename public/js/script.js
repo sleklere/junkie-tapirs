@@ -2609,6 +2609,33 @@ const getReceipt = async function (hash) {
   return receipt.status;
 };
 
+const updateMintWindow = function () {
+  showMintedSupply();
+  if (
+    (WLSaleActive &&
+      ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
+        (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))) ||
+    (publicSaleActive && publicMinted < publicMaxMints)
+  ) {
+    setMaxMint();
+    displayPrice();
+  } else {
+    mintButton.classList.add("hidden");
+    mintAddRm.classList.add("hidden");
+    divPriceQuant.style.justifyContent = "center";
+    if (!WLSaleActive && !publicSaleActive) {
+      mintPrice.textContent = "Sale closed!";
+    } else if (
+      !(proof && proof.length >= 1) &&
+      !(proofPaid && proofPaid.length >= 1)
+    ) {
+      mintPrice.textContent = "Not whitelisted!";
+    } else {
+      mintPrice.textContent = "Already minted max amount!";
+    }
+  }
+};
+
 ////////////////////////////////////////////
 // EVENT LISTENERS //
 ////////////////////////////////////////////
@@ -2621,9 +2648,7 @@ let updDataInterval = function () {
   setInterval(() => {
     console.log("30s interval: updating info");
     updateData();
-    showMintedSupply();
-    setMaxMint();
-    displayPrice();
+    updateMintWindow();
   }, 30000);
 };
 
@@ -2643,8 +2668,10 @@ openMintWindow.addEventListener("click", async function () {
   console.log(WLSaleActive, publicSaleActive);
   showMintedSupply();
   if (
-    ((proof && proof.length >= 1) || (proofPaid && proofPaid.length >= 1)) &&
-    (WLSaleActive || publicSaleActive)
+    (WLSaleActive &&
+      ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
+        (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))) ||
+    (publicSaleActive && publicMinted < publicMaxMints)
   ) {
     finalProof = `${proof ? proof.join(",") : proofPaid.join(",")}`;
     mintWindow.classList.remove("hidden");
@@ -2660,8 +2687,13 @@ openMintWindow.addEventListener("click", async function () {
     divPriceQuant.style.justifyContent = "center";
     if (!WLSaleActive && !publicSaleActive) {
       mintPrice.textContent = "Sale closed!";
-    } else {
+    } else if (
+      !(proof && proof.length >= 1) &&
+      !(proofPaid && proofPaid.length >= 1)
+    ) {
       mintPrice.textContent = "Not whitelisted!";
+    } else {
+      mintPrice.textContent = "Already minted max amount!";
     }
   }
 });
