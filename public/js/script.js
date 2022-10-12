@@ -28,7 +28,7 @@ let WlMaxMints;
 // );
 window.web3 = new Web3(
   new Web3.providers.HttpProvider(
-    "https://mainnet.infura.io/v3/605fd4367e7242a5aeaf25ab1b7a0edd"
+    "https://goerli.infura.io/v3/605fd4367e7242a5aeaf25ab1b7a0edd"
   )
 );
 const jsonInterface = [
