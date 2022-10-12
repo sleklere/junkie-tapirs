@@ -349,6 +349,17 @@ body {
   width: 20%;
 }
 
+.mint-warning {
+  width: 90%;
+  color: #222;
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: -1px;
+  word-spacing: -2px;
+  line-height: 15px;
+  text-align: center;
+}
+
 /* ////////////////////// */
 
 /* ///////////////////////// */

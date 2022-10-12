@@ -2428,6 +2428,7 @@ const pendingMintNotif = document.querySelector(".mint-notif");
 const notifText = document.querySelector(".notif-text");
 const notifHash = document.querySelector(".notif-hash");
 const gifLoadingMint = document.querySelector(".gif-loading-mint");
+const warningEl = document.querySelector(".mint-warning");
 
 ////////////////////////////////////////////
 // FUNCTIONS //
@@ -2561,12 +2562,6 @@ const displayPrice = async function () {
   const quantMintNum = Number(quantMint.textContent);
   let mintPriceTx;
   if (
-    mintPrice.textContent == "Not whitelisted!" ||
-    mintPrice.textContent == "Sale closed!"
-  ) {
-    return;
-  }
-  if (
     publicSaleActive ||
     typeof proofPaid !== "undefined" ||
     mintedFreeSupply >= freeSupply ||
@@ -2619,6 +2614,8 @@ const updateMintWindow = function () {
   ) {
     setMaxMint();
     displayPrice();
+    mintButton.classList.remove("hidden");
+    mintAddRm.classList.remove("hidden");
   } else {
     mintButton.classList.add("hidden");
     mintAddRm.classList.add("hidden");
@@ -2759,6 +2756,7 @@ const postMint = function (r) {
   notifHash.classList.remove("hidden");
   if (status == true) {
     // success
+    warningEl.classList.remove("hidden");
     console.log(`true?: ${status}`);
     notifText.textContent = "Mint successful!";
     // pendingMintNotif.style.background =
