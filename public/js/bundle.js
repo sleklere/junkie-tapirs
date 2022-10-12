@@ -21478,10 +21478,9 @@ const showMintedSupply = function () {
   freeMintedEl.textContent = mintedFreeSupply;
 };
 
-let mintPriceTx;
 const displayPrice = async function () {
   const quantMintNum = Number(quantMint.textContent);
-  // let mintPriceTx;
+  let mintPriceTx;
   if (
     mintPrice.textContent == "Not whitelisted!" ||
     mintPrice.textContent == "Sale closed!"
@@ -21652,10 +21651,9 @@ const postMint = function (status, hash) {
   setTimeout(postMint(status), 2000);
 };
 
-let price;
 // listener for mint button to send TX
 mintButton.addEventListener("click", async function () {
-  price = await displayPrice();
+  const price = await displayPrice();
   const account = (await web3.eth.getAccounts())[0];
   console.log(quantMintNum);
   pendingMintNotif.style.opacity = 1;
@@ -21693,7 +21691,7 @@ mintButton.addEventListener("click", async function () {
     })
     .catch((err) => {
       console.error(err);
-      alert(err.message);
+      console.log(err.message);
       if (err.message.includes("Transaction has been reverted by the EVM")) {
         const errorObj = JSON.parse(
           err.message.slice(err.message.indexOf("{"))
