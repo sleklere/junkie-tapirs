@@ -2625,10 +2625,10 @@ const updateMintWindow = function () {
     mintButton.classList.remove("hidden");
     mintAddRm.classList.remove("hidden");
   } else if (publicSaleActive && publicMinted < publicMaxMints) {
-    setMaxMint();
-    displayPrice();
     mintButton.classList.remove("hidden");
     mintAddRm.classList.remove("hidden");
+    setMaxMint();
+    displayPrice();
   } else {
     mintButton.classList.add("hidden");
     mintAddRm.classList.add("hidden");
@@ -2678,12 +2678,16 @@ openMintWindow.addEventListener("click", async function () {
   console.log(WLSaleActive, publicSaleActive);
   showMintedSupply();
   if (
-    (WLSaleActive &&
-      ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
-        (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))) ||
-    (publicSaleActive && publicMinted < publicMaxMints)
+    WLSaleActive &&
+    ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
+      (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))
   ) {
     finalProof = `${proof ? proof.join(",") : proofPaid.join(",")}`;
+    mintWindow.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+    setMaxMint();
+    displayPrice();
+  } else if (publicSaleActive && publicMinted < publicMaxMints) {
     mintWindow.classList.remove("hidden");
     overlay.classList.remove("hidden");
     setMaxMint();
