@@ -2824,6 +2824,7 @@ const catchPostMint = function (err) {
 mintButton.addEventListener("click", async function () {
   const price = await displayPrice();
   const account = (await web3.eth.getAccounts())[0];
+  const quantMintNum = Number(quantMint.textContent);
   console.log(quantMintNum);
   pendingMintNotif.style.opacity = 1;
   if (publicSaleActive) {
