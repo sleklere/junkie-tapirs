@@ -20,17 +20,17 @@ let WlMaxMints;
 // browserify script.js | uglifyjs > bundle.js
 // browserify script.js > bundle.js
 
-// window.web3 = new Web3(window.ethereum);
+window.web3 = new Web3(window.ethereum);
 // const web3 = new Web3(
 //   new Web3.providers.HttpProvider(
 //     "https://mainnet.infura.io/INFURA_ACCESS_TOKEN:8545%27"
 //   )
 // );
-window.web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    "https://goerli.infura.io/v3/605fd4367e7242a5aeaf25ab1b7a0edd"
-  )
-);
+// window.web3 = new Web3(
+//   new Web3.providers.HttpProvider(
+//     "https://goerli.infura.io/v3/605fd4367e7242a5aeaf25ab1b7a0edd"
+//   )
+// );
 const jsonInterface = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   { inputs: [], name: "ApprovalCallerNotOwnerNorApproved", type: "error" },
@@ -2763,7 +2763,7 @@ mintButton.addEventListener("click", async function () {
     })
     .catch((err) => {
       console.error(err);
-      console.log(err.message);
+      alert(err.message);
       if (err.message.includes("Transaction has been reverted by the EVM")) {
         const errorObj = JSON.parse(
           err.message.slice(err.message.indexOf("{"))
