@@ -19,6 +19,7 @@ let totalSupply;
 let freeMaxMints;
 let WlMaxMints;
 let publicMinted;
+let publicMaxMints;
 
 let myContract;
 let maxMint = 1;
@@ -2438,6 +2439,7 @@ const updateData = async function () {
   WLSaleActive = await myContract.methods.WLSaleActive().call();
   if (publicSaleActive) {
     publicMinted = await myContract.methods.publicMinted(account).call();
+    publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
   } else if (WLSaleActive) {
     if (freeWlAddresses.includes(account)) {
       freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
@@ -2595,6 +2597,7 @@ const setMaxMint = async function () {
 };
 
 const updateDataAfterMint = function () {
+  clearInterval(updDataInterval);
   maxMint -= 1;
   const quantMintNum = Number(quantMint.textContent);
   mintPriceTx = quantMintNum * priceMint;
@@ -2726,8 +2729,8 @@ const postMint = function (r) {
     // success
     console.log(`true?: ${status}`);
     notifText.textContent = "Mint successful!";
-    pendingMintNotif.style.background =
-      "linear-gradient(to bottom right, #00ff73, #009f03)";
+    // pendingMintNotif.style.background =
+    //   "linear-gradient(to bottom right, #00ff73, #009f03)";
     clearInterval(updDataInterval);
     setMaxMint();
     displayPrice();
@@ -2738,8 +2741,8 @@ const postMint = function (r) {
     notifHash.classList.add("hidden");
     gifLoadingMint.classList.remove("hidden");
     notifText.textContent = "Mint TX sent!";
-    pendingMintNotif.style.background =
-      "linear-gradient(to bottom right, #fca519, #f05c00);";
+    // pendingMintNotif.style.background =
+    //   "linear-gradient(to bottom right, #fca519, #f05c00);";
   }, 10000);
 };
 
@@ -2758,15 +2761,15 @@ const catchPostMint = function (err) {
       notifHash.classList.remove("hidden");
       console.log(`false?: ${errorObj.status}`);
       notifText.textContent = "Mint failed!";
-      pendingMintNotif.style.background =
-        "linear-gradient(to bottom right, #fc1919, #680808);";
+      // pendingMintNotif.style.background =
+      //   "linear-gradient(to bottom right, #fc1919, #680808);";
       setTimeout(function () {
         pendingMintNotif.style.opacity = 0;
         notifHash.classList.add("hidden");
         gifLoadingMint.classList.remove("hidden");
         notifText.textContent = "Mint TX sent!";
-        pendingMintNotif.style.background =
-          "linear-gradient(to bottom right, #fca519, #f05c00);";
+        // pendingMintNotif.style.background =
+        //   "linear-gradient(to bottom right, #fca519, #f05c00);";
       }, 10000);
     }
   } else {
