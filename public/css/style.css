@@ -30,6 +30,12 @@ body {
   padding: 3rem 4.8rem 1.5rem 4.8rem;
 }
 
+.header-logos {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
 /* NAV */
 
 .main-nav-ul {
@@ -41,10 +47,10 @@ body {
 }
 
 .logo-tw {
-  height: 4.6rem;
-  width: 4.6rem;
+  height: 4rem;
+  width: 4rem;
   cursor: pointer;
-  color: #fcc419;
+  color: #00acee;
 }
 
 /* Boton wallet */
@@ -152,6 +158,8 @@ body {
 .minted--supply {
   font-size: 1.3rem;
   text-align: center;
+  letter-spacing: -1.5px;
+  word-spacing: -2px;
 }
 
 .minted--supply p:first-child {
@@ -232,7 +240,7 @@ body {
   gap: 1rem;
   margin: 0 0.5rem;
 
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .proof-input-address {

@@ -81,6 +81,15 @@
 
 /* 620px */
 @media (max-width: 39rem) {
+  .header {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .header-logos {
+    gap: 1rem;
+  }
+
   /* achicar items header. achicar texto */
   .main-title {
     font-size: 3rem;
@@ -89,6 +98,10 @@
   .logo-tw {
     height: 4rem;
     width: 4rem;
+  }
+
+  .main-nav-ul {
+    gap: 1rem;
   }
 
   .logo {
@@ -118,6 +131,11 @@
 
 /* 500 px */
 @media (max-width: 32.2rem) {
+  .btn-connect-wallet {
+    font-size: 1.3rem;
+    width: 11rem;
+  }
+
   .click-me {
     right: -10%;
   }
@@ -160,7 +178,7 @@
 }
 
 /* 410px */
-@media (max-width: 25rem) {
+@media (max-width: 27.2rem) {
   .header {
     padding: 3rem 2rem 0 2rem;
   }
@@ -178,15 +196,16 @@
     width: 8rem;
   }
 
-  .btn-connect-wallet {
+  /* .btn-connect-wallet {
     font-size: 1.2rem;
     width: 11rem;
-  }
+  } */
 
   .mint-window {
     gap: 2rem;
     height: 80%;
     max-height: 70vh;
+    padding: 3rem 2rem;
   }
   .mint-sub-container {
     flex-direction: column;
@@ -218,7 +237,7 @@
   }
 
   .btn {
-    font-size: 1rem;
+    /* font-size: 1rem; */
     width: 8rem;
     /* padding: 1rem 1.25rem; */
   }
