@@ -21,16 +21,7 @@ let WlMaxMints;
 // browserify script.js > bundle.js
 
 window.web3 = new Web3(window.ethereum);
-// const web3 = new Web3(
-//   new Web3.providers.HttpProvider(
-//     "https://mainnet.infura.io/INFURA_ACCESS_TOKEN:8545%27"
-//   )
-// );
-// window.web3 = new Web3(
-//   new Web3.providers.HttpProvider(
-//     "https://goerli.infura.io/v3/605fd4367e7242a5aeaf25ab1b7a0edd"
-//   )
-// );
+
 const jsonInterface = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   { inputs: [], name: "ApprovalCallerNotOwnerNorApproved", type: "error" },
@@ -2422,6 +2413,8 @@ const quantMintNum = Number(quantMint.textContent);
 const addMintQ = document.querySelector(".add-circle");
 const rmMintQ = document.querySelector(".rm-circle");
 
+const proofAddressInput = document.querySelector(".proof-input-address");
+const getProofBtn = document.querySelector(".get-proof");
 const proofEl = document.querySelector(".proof");
 const copyProofBtn = document.querySelector(".copy-proof");
 
@@ -2812,6 +2805,24 @@ copyProofBtn.addEventListener("click", function () {
   setTimeout(function () {
     proofEl.textContent = proofDisplayed;
   }, 5000);
+});
+
+getProofBtn.addEventListener("click", function () {
+  const inputAddress = proofAddressInput.value;
+
+  if (freeWlAddresses.includes(inputAddress)) {
+    proof = getMerkleProof(account, merkleTree);
+    console.log(`proof home: ${proof}`);
+    proofDisplayed = proof[0].slice(0, 8);
+  } else if (paidWlAddresses.includes(inputAddress)) {
+    proofPaid = getMerkleProof(account, merkleTree2);
+    console.log(`proofPaid home: ${proofPaid}`);
+    proofDisplayed = proofPaid[0].slice(0, 8);
+  } else {
+    proofDisplayed = "No proof!";
+  }
+  finalProof = `${proof ? proof.join(",") : proofPaid.join(",")}`;
+  proofEl.textContent = proofDisplayed;
 });
 
 ////////////////////////////////////////////

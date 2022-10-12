@@ -23,11 +23,11 @@ body {
 /* /////////////// */
 
 .header {
-  height: 6.5vh;
+  height: 7vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3rem 4.8rem 0 4.8rem;
+  padding: 3rem 4.8rem 1.5rem 4.8rem;
 }
 
 /* NAV */
@@ -224,9 +224,43 @@ body {
   user-select: none;
 }
 
+.div-proof {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 0.5rem;
+
+  margin-top: 1rem;
+}
+
+.proof-input-address {
+  border: none;
+  border-radius: 5px;
+  padding: 0.3rem;
+  font-family: "Silkscreen", sans-serif;
+  font-size: 1.2rem;
+  width: 60%;
+}
+
+.get-proof {
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 1rem;
+  padding: 0.6rem;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  margin-left: 0.5rem;
+  transition: all 0.3s;
+  width: 35%;
+}
 .proof-p {
   display: flex;
   align-items: center;
+  font-family: "Press Start 2P", sans-serif;
+  color: #fff;
 }
 
 .proof-p span:first-child {
@@ -241,12 +275,13 @@ body {
   padding: 0.5rem;
   margin-left: 1rem;
   user-select: none;
+  color: #222;
 }
 
 .copy-proof {
   font-family: "Press Start 2P", sans-serif;
   font-size: 1rem;
-  padding: 0.5rem;
+  padding: 0.6rem;
   background-color: #222;
   color: #fff;
   border: none;
