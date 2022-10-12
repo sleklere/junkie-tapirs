@@ -3542,6 +3542,7 @@ const connectWallet = async function () {
   if (window.ethereum) {
     await window.ethereum.request({ method: "eth_requestAccounts" });
     account = (await web3.eth.getAccounts())[0];
+    account = account.toLowerCase();
     buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
     buttonConnect.classList.add("connected");
     // button that appears in a tablet/phone querie
@@ -3603,6 +3604,7 @@ const checkAndSwitch = async () => {
 const checkAcc = async () => {
   // window.web3 = new Web3(window.ethereum);
   account = (await web3.eth.getAccounts())[0];
+  account = account.toLowerCase();
   // console.log(`Account connected: ${account}`);
   // if there is an account connected
   if (account != undefined) {
@@ -3825,6 +3827,7 @@ window.ethereum.on("accountsChanged", async () => {
   openMintWindow.disabled = true;
   // console.log("acount state changed");
   account = await web3.eth.getAccounts();
+  account = account.toLowerCase();
   quantMint.textContent = "1";
   if (account[0]) {
     checkAcc();
@@ -3906,7 +3909,8 @@ const catchPostMint = function (err) {
 // listener for mint button to send TX
 mintButton.addEventListener("click", async function () {
   const price = await displayPrice();
-  const account = (await web3.eth.getAccounts())[0];
+  let account = (await web3.eth.getAccounts())[0];
+  account = account.toLowerCase();
   const quantMintNum = Number(quantMint.textContent);
   // console.log(quantMintNum);
   pendingMintNotif.style.opacity = 1;
