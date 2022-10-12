@@ -221,7 +221,8 @@ body {
 }
 
 .btn-mint-action:hover,
-.copy-proof:hover {
+.copy-proof:hover,
+.get-proof:hover {
   cursor: pointer;
   background-color: #444 !important;
 }
@@ -267,6 +268,11 @@ body {
 .proof-p {
   display: flex;
   align-items: center;
+  font-family: "Press Start 2P", sans-serif;
+  color: #fff;
+}
+
+.proof-congrats {
   font-family: "Press Start 2P", sans-serif;
   color: #fff;
 }

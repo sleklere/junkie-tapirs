@@ -3,7 +3,9 @@ const keccak256 = require("keccak256");
 const { MerkleTree } = require("merkletreejs");
 
 ///////////////////////////////////
+window.web3 = new Web3(window.ethereum);
 
+// Update data variables
 let freeSupply;
 let freeMinted;
 let mintedFreeSupply;
@@ -16,11 +18,14 @@ let maxSupply;
 let totalSupply;
 let freeMaxMints;
 let WlMaxMints;
+let publicMinted;
 
+let myContract;
+let maxMint = 1;
+
+let proofDisplayedInput;
 // browserify script.js | uglifyjs > bundle.js
 // browserify script.js > bundle.js
-
-window.web3 = new Web3(window.ethereum);
 
 const jsonInterface = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
@@ -521,9 +526,6 @@ const jsonInterface = [
     type: "function",
   },
 ];
-let myContract;
-
-let maxMint = 1;
 
 ////////////////////////////////////////////
 // WL's and MERKLE TREE //
@@ -2370,6 +2372,11 @@ let paidWlAddresses = [
   "0xb485a46a59B206d5C30Ad6c814E2e3373F132dd9",
 ];
 
+let proof;
+let proofPaid;
+
+let proofCopy;
+
 const leafNodes = freeWlAddresses.map((addr) => keccak256(addr));
 const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 const rootHash = merkleTree.getRoot().toString("hex");
@@ -2379,9 +2386,6 @@ const leafNodes2 = paidWlAddresses.map((addr) => keccak256(addr));
 const merkleTree2 = new MerkleTree(leafNodes2, keccak256, { sortPairs: true });
 const rootHash2 = merkleTree2.getRoot().toString("hex");
 console.log("root paid", rootHash2);
-
-let proof;
-let proofPaid;
 
 ////////////////////////////////////////////
 
@@ -2417,6 +2421,7 @@ const proofAddressInput = document.querySelector(".proof-input-address");
 const getProofBtn = document.querySelector(".get-proof");
 const proofEl = document.querySelector(".proof");
 const copyProofBtn = document.querySelector(".copy-proof");
+const congratEl = document.querySelector(".proof-congrats");
 
 const pendingMintNotif = document.querySelector(".mint-notif");
 const notifText = document.querySelector(".notif-text");
@@ -2429,17 +2434,24 @@ const gifLoadingMint = document.querySelector(".gif-loading-mint");
 
 const updateData = async function () {
   console.log("updating data");
-  freeSupply = await myContract.methods.freeSupply().call();
-  freeMinted = await myContract.methods.freeMinted(account).call();
-  mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  mintedAcc = await myContract.methods.numberMinted(account).call();
-  priceMint = await myContract.methods.price().call();
   publicSaleActive = await myContract.methods.publicSaleActive().call();
   WLSaleActive = await myContract.methods.WLSaleActive().call();
+  if (publicSaleActive) {
+    publicMinted = await myContract.methods.publicMinted(account).call();
+  } else if (WLSaleActive) {
+    if (freeWlAddresses.includes(account)) {
+      freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+      freeMinted = await myContract.methods.freeMinted(account).call();
+    } else if (paidWlAddresses.includes(account)) {
+      WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
+    }
+    mintedAcc = await myContract.methods.numberMinted(account).call();
+  }
+  priceMint = await myContract.methods.price().call();
+  freeSupply = await myContract.methods.freeSupply().call();
+  mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
   maxSupply = await myContract.methods.maxSupply().call();
   totalSupply = await myContract.methods.totalSupply().call();
-  freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
 };
 
 function getMerkleProof(address, tree) {
@@ -2461,6 +2473,8 @@ const connectWallet = async function () {
     console.log(`Wallet connected: ${account}`);
     web3.eth.getChainId().then(console.log);
     await checkAndSwitch();
+    proof = getMerkleProof(account, merkleTree);
+    proofPaid = getMerkleProof(account, merkleTree2);
     updateData().then((a) => {
       openMintWindow.disabled = false;
       updDataInterval();
@@ -2569,7 +2583,7 @@ const displayPrice = async function () {
 const setMaxMint = async function () {
   // supply 333/333 or free minted
   if (publicSaleActive) {
-    maxMint = publicMaxMints - mintedAcc;
+    maxMint = publicMaxMints - publicMinted;
   } else if (typeof proofPaid !== "undefined") {
     maxMint = WlMaxMints - mintedAcc;
   } else if (mintedFreeSupply >= freeSupply || freeMinted) {
@@ -2766,7 +2780,17 @@ mintButton.addEventListener("click", async function () {
   const account = (await web3.eth.getAccounts())[0];
   console.log(quantMintNum);
   pendingMintNotif.style.opacity = 1;
-  if (typeof proof !== "undefined") {
+  if (publicSaleActive) {
+    myContract.methods
+      .mint(quantMintNum)
+      .send({ from: account, value: price })
+      .then((r) => {
+        postMint(r);
+      })
+      .catch((err) => {
+        catchPostMint(err);
+      });
+  } else if (typeof proof !== "undefined") {
     myContract.methods
       .freeMint(quantMintNum, proof)
       .send({ from: account, value: price })
@@ -2786,43 +2810,41 @@ mintButton.addEventListener("click", async function () {
       .catch((err) => {
         catchPostMint(err);
       });
-  } else {
-    myContract.methods
-      .mint(quantMintNum)
-      .send({ from: account, value: price })
-      .then((r) => {
-        postMint(r);
-      })
-      .catch((err) => {
-        catchPostMint(err);
-      });
   }
 });
 
 copyProofBtn.addEventListener("click", function () {
-  navigator.clipboard.writeText(finalProof);
+  navigator.clipboard.writeText(proofCopy);
   proofEl.textContent = "Copied!";
   setTimeout(function () {
-    proofEl.textContent = proofDisplayed;
+    proofEl.textContent = proofDisplayedInput;
   }, 5000);
 });
 
 getProofBtn.addEventListener("click", function () {
   const inputAddress = proofAddressInput.value;
+  let proofInput;
+  let proofPaidInput;
 
   if (freeWlAddresses.includes(inputAddress)) {
-    proof = getMerkleProof(account, merkleTree);
-    console.log(`proof home: ${proof}`);
-    proofDisplayed = proof[0].slice(0, 8);
+    proofInput = getMerkleProof(account, merkleTree);
+    console.log(`proof home: ${proofInput}`);
+    proofDisplayedInput = proofInput[0].slice(0, 8);
+    congratEl.textContent = "Congrats! You are on the free WL!";
+    congratEl.style.color = "green";
   } else if (paidWlAddresses.includes(inputAddress)) {
-    proofPaid = getMerkleProof(account, merkleTree2);
-    console.log(`proofPaid home: ${proofPaid}`);
-    proofDisplayed = proofPaid[0].slice(0, 8);
+    proofPaidInput = getMerkleProof(account, merkleTree2);
+    console.log(`proofPaid home: ${proofPaidInput}`);
+    proofDisplayedInput = proofPaidInput[0].slice(0, 8);
+    congratEl.textContent = "Congrats! You are on the paid WL!";
+    congratEl.style.color = "green";
   } else {
-    proofDisplayed = "No proof!";
+    proofDisplayedInput = "No proof!";
+    congratEl.textContent = "Sorry! You are not whitelisted";
+    congratEl.style.color = "red";
   }
-  finalProof = `${proof ? proof.join(",") : proofPaid.join(",")}`;
-  proofEl.textContent = proofDisplayed;
+  proofCopy = `${proofInput ? proofInput.join(",") : proofPaidInput.join(",")}`;
+  proofEl.textContent = proofDisplayedInput;
 });
 
 ////////////////////////////////////////////
