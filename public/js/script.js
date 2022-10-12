@@ -3826,7 +3826,7 @@ btnConnectSmall.addEventListener("click", function () {
 window.ethereum.on("accountsChanged", async () => {
   openMintWindow.disabled = true;
   // console.log("acount state changed");
-  account = await web3.eth.getAccounts()[0];
+  account = (await web3.eth.getAccounts())[0];
   account = account.toLowerCase();
   quantMint.textContent = "1";
   if (account) {
