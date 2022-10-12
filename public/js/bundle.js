@@ -21374,7 +21374,7 @@ function getMerkleProof(address, tree) {
   return tree.getHexProof(hashedAddress);
 }
 
-async function connectWallet() {
+const connectWallet = async function () {
   if (window.ethereum) {
     await window.ethereum.request({ method: "eth_requestAccounts" });
     account = (await web3.eth.getAccounts())[0];
@@ -21390,11 +21390,12 @@ async function connectWallet() {
     await checkAndSwitch();
     updateData().then((a) => {
       openMintWindow.disabled = false;
+      updDataInterval();
     });
   } else {
     console.log("No wallet");
   }
-}
+};
 
 // checks if the current network of the wallet is the intended one (in this case the rinkby testnet)
 const checkNetwork = async () => {
@@ -21453,7 +21454,10 @@ const checkAcc = async () => {
       openMintWindow.style.padding = "1.25rem 1.5rem";
       openMintWindow.textContent = "Mint!";
       openMintWindow.disabled = false;
+      updDataInterval();
     });
+  } else {
+    openMintWindow.textContent = "Mint!";
   }
 };
 
@@ -21464,9 +21468,10 @@ const showMintedSupply = function () {
   freeMintedEl.textContent = mintedFreeSupply;
 };
 
+let mintPriceTx;
 const displayPrice = async function () {
   const quantMintNum = Number(quantMint.textContent);
-  let mintPriceTx;
+  // let mintPriceTx;
   if (
     mintPrice.textContent == "Not whitelisted!" ||
     mintPrice.textContent == "Sale closed!"
@@ -21503,6 +21508,13 @@ const setMaxMint = async function () {
   console.log(`maxMint : ${maxMint}`);
 };
 
+const updateDataAfterMint = function () {
+  maxMint -= 1;
+  const quantMintNum = Number(quantMint.textContent);
+  mintPriceTx = quantMintNum * priceMint;
+  mintPrice.textContent = mintPriceTx / 10 ** 18 + "Ξ";
+};
+
 const getReceipt = async function (hash) {
   const receipt = await web3.eth.getTransactionReceipt(hash);
   return receipt.status;
@@ -21514,15 +21526,17 @@ const getReceipt = async function (hash) {
 
 let proofDisplayed;
 let finalProof;
-let updDataInterval;
+// let updDataInterval;
 
-updDataInterval = setInterval(() => {
-  console.log("30s interval: updating info");
-  updateData();
-  showMintedSupply();
-  setMaxMint();
-  displayPrice();
-}, 30000);
+let updDataInterval = function () {
+  setInterval(() => {
+    console.log("30s interval: updating info");
+    updateData();
+    showMintedSupply();
+    setMaxMint();
+    displayPrice();
+  }, 30000);
+};
 
 openMintWindow.addEventListener("click", async function () {
   if (freeWlAddresses.includes(account)) {
@@ -21628,9 +21642,10 @@ const postMint = function (status, hash) {
   setTimeout(postMint(status), 2000);
 };
 
+let price;
 // listener for mint button to send TX
 mintButton.addEventListener("click", async function () {
-  const price = await displayPrice();
+  price = await displayPrice();
   const account = (await web3.eth.getAccounts())[0];
   console.log(quantMintNum);
   pendingMintNotif.style.opacity = 1;
@@ -21644,7 +21659,6 @@ mintButton.addEventListener("click", async function () {
       // postMint(status, hash);
 
       gifLoadingMint.classList.add("hidden");
-      // notifHash.textContent = "Check TX on Etherscan";
       notifHash.setAttribute("href", `https://goerli.etherscan.io/tx/${hash}`);
       notifHash.classList.remove("hidden");
       if (status == true) {
@@ -21653,6 +21667,10 @@ mintButton.addEventListener("click", async function () {
         notifText.textContent = "Mint successful!";
         pendingMintNotif.style.background =
           "linear-gradient(to bottom right, #00ff73, rgb(0, 159, 3))";
+        clearInterval(updDataInterval);
+        setMaxMint();
+        displayPrice();
+        setTimeout(updDataInterval, 120 * 1000);
       }
       setTimeout(function () {
         pendingMintNotif.style.opacity = 0;
