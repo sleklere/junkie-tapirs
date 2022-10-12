@@ -2510,7 +2510,7 @@ const checkAndSwitch = async () => {
   }
   myContract = new web3.eth.Contract(
     jsonInterface,
-    "0x3f6E095Fca12E85AC88c32C98a4B8f3D9c555887"
+    "0x4758377E68841f5B7dAfc4354BEdFD833dc32884"
   );
 };
 
@@ -2706,50 +2706,53 @@ window.ethereum.on("accountsChanged", async () => {
   window.location.reload();
 });
 
-const postMint = function (status, hash) {
-  status = getReceipt(hash);
+const postMint = function (r) {
+  console.log(r);
+  let status = r.status;
+  let hash = r.transactionHash;
+  // postMint(status, hash);
+
+  gifLoadingMint.classList.add("hidden");
+  notifHash.setAttribute("href", `https://goerli.etherscan.io/tx/${hash}`);
+  notifHash.classList.remove("hidden");
   if (status == true) {
     // success
     console.log(`true?: ${status}`);
-    return;
-  } else if (status == false) {
-    console.log(`false?: ${status}`);
-    // failed
-    return;
+    notifText.textContent = "Mint successful!";
+    pendingMintNotif.style.background =
+      "linear-gradient(to bottom right, #00ff73, #009f03)";
+    clearInterval(updDataInterval);
+    setMaxMint();
+    displayPrice();
+    setTimeout(updDataInterval, 120 * 1000);
   }
-  console.log("timeout will run");
-  setTimeout(postMint(status), 2000);
+  setTimeout(function () {
+    pendingMintNotif.style.opacity = 0;
+    notifHash.classList.add("hidden");
+    gifLoadingMint.classList.remove("hidden");
+    notifText.textContent = "Mint TX sent!";
+    pendingMintNotif.style.background =
+      "linear-gradient(to bottom right, #fca519, #f05c00);";
+  }, 10000);
 };
 
-// listener for mint button to send TX
-mintButton.addEventListener("click", async function () {
-  const price = await displayPrice();
-  const account = (await web3.eth.getAccounts())[0];
-  console.log(quantMintNum);
-  pendingMintNotif.style.opacity = 1;
-  myContract.methods
-    .freeMint(quantMintNum, proof)
-    .send({ from: account, value: price })
-    .then((r) => {
-      console.log(r);
-      let status = r.status;
-      let hash = r.transactionHash;
-      // postMint(status, hash);
-
-      gifLoadingMint.classList.add("hidden");
-      notifHash.setAttribute("href", `https://goerli.etherscan.io/tx/${hash}`);
+const catchPostMint = function (err) {
+  console.error(err);
+  console.log(err.message);
+  if (err.message.includes("Transaction has been reverted by the EVM")) {
+    const errorObj = JSON.parse(err.message.slice(err.message.indexOf("{")));
+    console.log(errorObj);
+    if (errorObj.status == false) {
+      // failed
+      notifHash.setAttribute(
+        "href",
+        `https://goerli.etherscan.io/tx/${errorObj.transactionHash}`
+      );
       notifHash.classList.remove("hidden");
-      if (status == true) {
-        // success
-        console.log(`true?: ${status}`);
-        notifText.textContent = "Mint successful!";
-        pendingMintNotif.style.background =
-          "linear-gradient(to bottom right, #00ff73, #009f03)";
-        clearInterval(updDataInterval);
-        setMaxMint();
-        displayPrice();
-        setTimeout(updDataInterval, 120 * 1000);
-      }
+      console.log(`false?: ${errorObj.status}`);
+      notifText.textContent = "Mint failed!";
+      pendingMintNotif.style.background =
+        "linear-gradient(to bottom right, #fc1919, #680808);";
       setTimeout(function () {
         pendingMintNotif.style.opacity = 0;
         notifHash.classList.add("hidden");
@@ -2758,39 +2761,49 @@ mintButton.addEventListener("click", async function () {
         pendingMintNotif.style.background =
           "linear-gradient(to bottom right, #fca519, #f05c00);";
       }, 10000);
-    })
-    .catch((err) => {
-      console.error(err);
-      console.log(err.message);
-      if (err.message.includes("Transaction has been reverted by the EVM")) {
-        const errorObj = JSON.parse(
-          err.message.slice(err.message.indexOf("{"))
-        );
-        console.log(errorObj);
-        if (errorObj.status == false) {
-          // failed
-          notifHash.setAttribute(
-            "href",
-            `https://goerli.etherscan.io/tx/${errorObj.transactionHash}`
-          );
-          notifHash.classList.remove("hidden");
-          console.log(`false?: ${errorObj.status}`);
-          notifText.textContent = "Mint failed!";
-          pendingMintNotif.style.background =
-            "linear-gradient(to bottom right, #fc1919, #680808);";
-          setTimeout(function () {
-            pendingMintNotif.style.opacity = 0;
-            notifHash.classList.add("hidden");
-            gifLoadingMint.classList.remove("hidden");
-            notifText.textContent = "Mint TX sent!";
-            pendingMintNotif.style.background =
-              "linear-gradient(to bottom right, #fca519, #f05c00);";
-          }, 10000);
-        }
-      } else {
-        pendingMintNotif.style.opacity = 0;
-      }
-    });
+    }
+  } else {
+    pendingMintNotif.style.opacity = 0;
+  }
+};
+
+// listener for mint button to send TX
+mintButton.addEventListener("click", async function () {
+  const price = await displayPrice();
+  const account = (await web3.eth.getAccounts())[0];
+  console.log(quantMintNum);
+  pendingMintNotif.style.opacity = 1;
+  if (typeof proof !== "undefined") {
+    myContract.methods
+      .freeMint(quantMintNum, proof)
+      .send({ from: account, value: price })
+      .then((r) => {
+        postMint(r);
+      })
+      .catch((err) => {
+        catchPostMint(err);
+      });
+  } else if (typeof proofPaid !== "undefined") {
+    myContract.methods
+      .WLMint(quantMintNum, proofPaid)
+      .send({ from: account, value: price })
+      .then((r) => {
+        postMint(r);
+      })
+      .catch((err) => {
+        catchPostMint(err);
+      });
+  } else {
+    myContract.methods
+      .mint(quantMintNum)
+      .send({ from: account, value: price })
+      .then((r) => {
+        postMint(r);
+      })
+      .catch((err) => {
+        catchPostMint(err);
+      });
+  }
 });
 
 copyProofBtn.addEventListener("click", function () {
