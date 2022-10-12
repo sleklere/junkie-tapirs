@@ -3742,11 +3742,11 @@ let updDataInterval = function () {
 };
 
 openMintWindow.addEventListener("click", async function () {
-  if (freeWlAddresses.includes(account)) {
+  if (freeWlAddresses.includes(account.toLowerCase())) {
     proof = getMerkleProof(account, merkleTree);
     // console.log(`proof mintwindow: ${proof}`);
     // console.log(`proof mintwindow[0]: ${proof[0]}`);
-  } else if (paidWlAddresses.includes(account)) {
+  } else if (paidWlAddresses.includes(account.toLowerCase())) {
     proofPaid = getMerkleProof(account, merkleTree2);
     // console.log(`proofPaid mintwindow: ${proofPaid}`);
   }
