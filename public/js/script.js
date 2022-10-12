@@ -826,6 +826,7 @@ let freeWlAddresses = [
   "0xfc2eaed3df199390be4b5ca209d626d1b2b06b5f",
   "0xff510630dbcd08830a7b74cda7c85931ea0ccefb",
   "0xff8c7a718df65daa4cb270a1a0d16424965a54b5",
+  "0x0519d0d546efcaac8cfdb06eddcb605ac55c015e",
 ];
 
 let paidWlAddresses = [
@@ -3445,6 +3446,7 @@ let paidWlAddresses = [
   "0xc363534e2e0f5ca20ff2a6188113e43d22a79a7b",
   "0x9b6896627b31811c9382a8a38fa4f61466785555",
   "0xf198a6c5271d27f610718f57dec5331bc4ebfc7f",
+  "0x731f7fbf884d33a3352785dc199f317abe64db4b",
 ];
 
 let proof;
