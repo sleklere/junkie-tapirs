@@ -2690,7 +2690,10 @@ openMintWindow.addEventListener("click", async function () {
     overlay.classList.remove("hidden");
     setMaxMint();
     displayPrice();
-  } else if (publicSaleActive && publicMinted < publicMaxMints) {
+  } else if (
+    publicSaleActive &&
+    Number(publicMinted) < Number(publicMaxMints)
+  ) {
     mintWindow.classList.remove("hidden");
     overlay.classList.remove("hidden");
     setMaxMint();
