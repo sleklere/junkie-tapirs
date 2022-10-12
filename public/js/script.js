@@ -2620,11 +2620,14 @@ const updateMintWindow = function () {
     ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
       (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))
   ) {
-    setMaxMint();
-    displayPrice();
     mintButton.classList.remove("hidden");
     mintAddRm.classList.remove("hidden");
-  } else if (publicSaleActive && publicMinted < publicMaxMints) {
+    setMaxMint();
+    displayPrice();
+  } else if (
+    publicSaleActive &&
+    Number(publicMinted) < Number(publicMaxMints)
+  ) {
     mintButton.classList.remove("hidden");
     mintAddRm.classList.remove("hidden");
     setMaxMint();
