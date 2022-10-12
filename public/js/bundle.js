@@ -21364,39 +21364,22 @@ const warningEl = document.querySelector(".mint-warning");
 // FUNCTIONS //
 ////////////////////////////////////////////
 
-// const updateData = async function () {
-//   console.log("updating data");
-//   publicSaleActive = await myContract.methods.publicSaleActive().call();
-//   WLSaleActive = await myContract.methods.WLSaleActive().call();
-//   if (publicSaleActive) {
-//     publicMinted = await myContract.methods.publicMinted(account).call();
-//     publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
-//   } else if (WLSaleActive) {
-//     if (freeWlAddresses.includes(account)) {
-//       freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-//       freeMinted = await myContract.methods.freeMinted(account).call();
-//     } else if (paidWlAddresses.includes(account)) {
-//       WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
-//     }
-//     mintedAcc = await myContract.methods.numberMinted(account).call();
-//   }
-//   priceMint = await myContract.methods.price().call();
-//   freeSupply = await myContract.methods.freeSupply().call();
-//   mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-//   maxSupply = await myContract.methods.maxSupply().call();
-//   totalSupply = await myContract.methods.totalSupply().call();
-// };
-
 const updateData = async function () {
   console.log("updating data");
   publicSaleActive = await myContract.methods.publicSaleActive().call();
   WLSaleActive = await myContract.methods.WLSaleActive().call();
-  publicMinted = await myContract.methods.publicMinted(account).call();
-  publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
-  freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-  freeMinted = await myContract.methods.freeMinted(account).call();
-  WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
-  mintedAcc = await myContract.methods.numberMinted(account).call();
+  if (publicSaleActive) {
+    publicMinted = await myContract.methods.publicMinted(account).call();
+    publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
+  } else if (WLSaleActive) {
+    if (freeWlAddresses.includes(account)) {
+      freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+      freeMinted = await myContract.methods.freeMinted(account).call();
+    } else if (paidWlAddresses.includes(account)) {
+      WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
+    }
+    mintedAcc = await myContract.methods.numberMinted(account).call();
+  }
   priceMint = await myContract.methods.price().call();
   freeSupply = await myContract.methods.freeSupply().call();
   mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
@@ -21563,11 +21546,15 @@ const updateMintWindow = function () {
   console.log(`publicMinted: ${publicMinted}`);
   console.log(`publicMaxMints: ${publicMaxMints}`);
   if (
-    (WLSaleActive &&
-      ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
-        (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))) ||
-    (publicSaleActive && publicMinted < publicMaxMints)
+    WLSaleActive &&
+    ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
+      (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))
   ) {
+    setMaxMint();
+    displayPrice();
+    mintButton.classList.remove("hidden");
+    mintAddRm.classList.remove("hidden");
+  } else if (publicSaleActive && publicMinted < publicMaxMints) {
     setMaxMint();
     displayPrice();
     mintButton.classList.remove("hidden");
