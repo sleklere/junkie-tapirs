@@ -21536,6 +21536,15 @@ const getReceipt = async function (hash) {
 
 const updateMintWindow = function () {
   showMintedSupply();
+  console.log(`wlsaleactive: ${WLSaleActive}`);
+  console.log(`mintedAcc: ${mintedAcc}`);
+  console.log(`proof: ${proof}`);
+  console.log(`proofPaid: ${proofPaid}`);
+  console.log(`freeMaxMints: ${freeMaxMints}`);
+  console.log(`WlMaxMints: ${WlMaxMints}`);
+  console.log(`publicSaleActive: ${publicSaleActive}`);
+  console.log(`publicMinted: ${publicMinted}`);
+  console.log(`publicMaxMints: ${publicMaxMints}`);
   if (
     (WLSaleActive &&
       ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
