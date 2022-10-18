@@ -22455,33 +22455,7 @@ const warningEl = document.querySelector(".mint-warning");
 // FUNCTIONS //
 ////////////////////////////////////////////
 
-const updateData = async function () {
-  // console.log("updating data");
-  publicSaleActive = await myContract.methods.publicSaleActive().call();
-  WLSaleActive = await myContract.methods.WLSaleActive().call();
-  if (publicSaleActive) {
-    publicMinted = await myContract.methods.publicMinted(account).call();
-    publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
-  } else if (WLSaleActive) {
-    if (freeWlAddresses.includes(account)) {
-      freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
-      freeMinted = await myContract.methods.freeMinted(account).call();
-    } else if (paidWlAddresses.includes(account)) {
-      WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
-    }
-    mintedAcc = await myContract.methods.numberMinted(account).call();
-  }
-  priceMint = await myContract.methods.price().call();
-  freeSupply = await myContract.methods.freeSupply().call();
-  mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
-  maxSupply = await myContract.methods.maxSupply().call();
-  totalSupply = await myContract.methods.totalSupply().call();
-};
-
-function getMerkleProof(address, tree) {
-  const hashedAddress = keccak256(address);
-  return tree.getHexProof(hashedAddress);
-}
+// Wallet/network related
 
 const connectWallet = async function () {
   if (window.ethereum) {
@@ -22549,10 +22523,10 @@ const checkAndSwitch = async () => {
 const checkAcc = async () => {
   // window.web3 = new Web3(window.ethereum);
   account = (await web3.eth.getAccounts())[0];
-  account = account.toLowerCase();
   // console.log(`Account connected: ${account}`);
   // if there is an account connected
   if (account != undefined) {
+    account = account.toLowerCase();
     // checks for network and switches if needed
     await checkAndSwitch();
     buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
@@ -22573,6 +22547,9 @@ const checkAcc = async () => {
     openMintWindow.textContent = "Mint!";
   }
 };
+
+// ///////////////////////////
+// UI stuff
 
 const showMintedSupply = function () {
   maxSupplyEl.textContent = maxSupply;
@@ -22611,33 +22588,10 @@ const setMaxMint = async function () {
   } else {
     maxMint = freeMaxMints - mintedAcc;
   }
-  // console.log(`maxMint : ${maxMint}`);
-};
-
-const updateDataAfterMint = function () {
-  clearInterval(updDataInterval);
-  maxMint -= 1;
-  const quantMintNum = Number(quantMint.textContent);
-  mintPriceTx = quantMintNum * priceMint;
-  mintPrice.textContent = mintPriceTx / 10 ** 18 + "Ξ";
-};
-
-const getReceipt = async function (hash) {
-  const receipt = await web3.eth.getTransactionReceipt(hash);
-  return receipt.status;
 };
 
 const updateMintWindow = function () {
   showMintedSupply();
-  // console.log(`wlsaleactive: ${WLSaleActive}`);
-  // console.log(`mintedAcc: ${mintedAcc}`);
-  // console.log(`proof: ${proof}`);
-  // console.log(`proofPaid: ${proofPaid}`);
-  // console.log(`freeMaxMints: ${freeMaxMints}`);
-  // console.log(`WlMaxMints: ${WlMaxMints}`);
-  // console.log(`publicSaleActive: ${publicSaleActive}`);
-  // console.log(`publicMinted: ${publicMinted}`);
-  // console.log(`publicMaxMints: ${publicMaxMints}`);
   if (
     WLSaleActive &&
     ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
@@ -22672,13 +22626,36 @@ const updateMintWindow = function () {
   }
 };
 
-////////////////////////////////////////////
-// EVENT LISTENERS //
-////////////////////////////////////////////
+// //////////////////////////////
+// Data
 
-let proofDisplayed;
-let finalProof;
-// let updDataInterval;
+const updateData = async function () {
+  // console.log("updating data");
+  publicSaleActive = await myContract.methods.publicSaleActive().call();
+  WLSaleActive = await myContract.methods.WLSaleActive().call();
+  if (publicSaleActive) {
+    publicMinted = await myContract.methods.publicMinted(account).call();
+    publicMaxMints = await myContract.methods.PUBLIC_MAX_MINTS().call();
+  } else if (WLSaleActive) {
+    if (freeWlAddresses.includes(account)) {
+      freeMaxMints = await myContract.methods.FREE_MAX_MINTS().call();
+      freeMinted = await myContract.methods.freeMinted(account).call();
+    } else if (paidWlAddresses.includes(account)) {
+      WlMaxMints = await myContract.methods.WL_MAX_MINTS().call();
+    }
+    mintedAcc = await myContract.methods.numberMinted(account).call();
+  }
+  priceMint = await myContract.methods.price().call();
+  freeSupply = await myContract.methods.freeSupply().call();
+  mintedFreeSupply = await myContract.methods.mintedFreeSupply().call();
+  maxSupply = await myContract.methods.maxSupply().call();
+  totalSupply = await myContract.methods.totalSupply().call();
+};
+
+function getMerkleProof(address, tree) {
+  const hashedAddress = keccak256(address);
+  return tree.getHexProof(hashedAddress);
+}
 
 let updDataInterval = function () {
   setInterval(() => {
@@ -22687,6 +22664,128 @@ let updDataInterval = function () {
     updateMintWindow();
   }, 30000);
 };
+
+////////////////////////////////////////////
+// Mint related
+
+const postMint = function (r) {
+  // console.log(r);
+  let status = r.status;
+  let hash = r.transactionHash;
+  // postMint(status, hash);
+
+  gifLoadingMint.classList.add("hidden");
+  notifHash.setAttribute("href", `https://etherscan.io/tx/${hash}`);
+  notifHash.classList.remove("hidden");
+  if (status == true) {
+    // success
+    warningEl.classList.remove("hidden");
+    notifText.textContent = "Mint successful!";
+    clearInterval(updDataInterval);
+    setMaxMint();
+    displayPrice();
+    setTimeout(updDataInterval, 120 * 1000);
+  }
+  setTimeout(function () {
+    pendingMintNotif.style.opacity = 0;
+    notifHash.classList.add("hidden");
+    gifLoadingMint.classList.remove("hidden");
+    notifText.textContent = "Mint TX sent!";
+  }, 10000);
+};
+
+const catchPostMint = function (err) {
+  console.error(err);
+  // console.log(err.message);
+  if (err.message.includes("Transaction has been reverted by the EVM")) {
+    const errorObj = JSON.parse(err.message.slice(err.message.indexOf("{")));
+    if (errorObj.status == false) {
+      // failed
+      notifHash.setAttribute(
+        "href",
+        `https://etherscan.io/tx/${errorObj.transactionHash}`
+      );
+      notifHash.classList.remove("hidden");
+      notifText.textContent = "Mint failed!";
+      setTimeout(function () {
+        pendingMintNotif.style.opacity = 0;
+        notifHash.classList.add("hidden");
+        gifLoadingMint.classList.remove("hidden");
+        notifText.textContent = "Mint TX sent!";
+      }, 10000);
+    }
+  } else {
+    pendingMintNotif.style.opacity = 0;
+  }
+};
+
+////////////////////////////////////////////
+// EVENT LISTENERS //
+////////////////////////////////////////////
+
+buttonConnect.addEventListener("click", function () {
+  connectWallet();
+});
+
+btnConnectSmall.addEventListener("click", function () {
+  connectWallet();
+});
+
+window.ethereum.on("accountsChanged", async () => {
+  openMintWindow.disabled = true;
+  // console.log("acount state changed");
+  account = (await web3.eth.getAccounts())[0];
+  account = account.toLowerCase();
+  quantMint.textContent = "1";
+  if (account) {
+    checkAcc();
+  } else {
+    // console.log("no account");
+    buttonConnect.classList.remove("connected");
+    buttonConnect.textContent = "Connect Wallet";
+    // button that appears in a tablet/phone querie
+    btnConnectSmall.textContent = `${account.slice(0, 6)}...${account.slice(
+      -4
+    )}`;
+    btnConnectSmall.classList.add("connected");
+  }
+  window.location.reload();
+});
+
+// get merkle proof at home page if user can't connect wallet
+getProofBtn.addEventListener("click", function () {
+  const inputAddress = proofAddressInput.value.toLowerCase();
+  let proofInput;
+  let proofPaidInput;
+
+  if (freeWlAddresses.includes(inputAddress)) {
+    proofInput = getMerkleProof(inputAddress, merkleTree);
+    // console.log(`proof home: ${proofInput}`);
+    proofDisplayedInput = proofInput[0];
+    congratEl.textContent = "Congrats! You are on the free WL!";
+    congratEl.style.color = "green";
+  } else if (paidWlAddresses.includes(inputAddress)) {
+    proofPaidInput = getMerkleProof(inputAddress, merkleTree2);
+    // console.log(`proofPaid home: ${proofPaidInput}`);
+    proofDisplayedInput = proofPaidInput[0];
+    congratEl.textContent = "Congrats! You are on the paid WL!";
+    congratEl.style.color = "green";
+  } else {
+    proofDisplayedInput = "No proof!";
+    congratEl.textContent = "Sorry! You are not whitelisted";
+    congratEl.style.color = "red";
+  }
+  proofCopy = `${proofInput ? proofInput.join(",") : proofPaidInput.join(",")}`;
+  proofEl.textContent = proofDisplayedInput;
+});
+
+copyProofBtn.addEventListener("click", function () {
+  navigator.clipboard.writeText(proofCopy);
+  proofEl.textContent = "Copied!";
+  setTimeout(function () {
+    proofEl.textContent = proofDisplayedInput;
+  }, 5000);
+});
 
 openMintWindow.addEventListener("click", async function () {
   if (freeWlAddresses.includes(account.toLowerCase())) {
@@ -22705,7 +22804,6 @@ openMintWindow.addEventListener("click", async function () {
     ((proof && proof.length >= 1 && mintedAcc < freeMaxMints) ||
       (proofPaid && proofPaid.length >= 1 && mintedAcc < WlMaxMints))
   ) {
-    finalProof = `${proof ? proof.join(",") : proofPaid.join(",")}`;
     mintWindow.classList.remove("hidden");
     overlay.classList.remove("hidden");
     setMaxMint();
@@ -22760,97 +22858,6 @@ addMintQ.addEventListener("click", function () {
   displayPrice();
 });
 
-buttonConnect.addEventListener("click", function () {
-  connectWallet();
-});
-
-btnConnectSmall.addEventListener("click", function () {
-  connectWallet();
-});
-
-window.ethereum.on("accountsChanged", async () => {
-  openMintWindow.disabled = true;
-  // console.log("acount state changed");
-  account = (await web3.eth.getAccounts())[0];
-  account = account.toLowerCase();
-  quantMint.textContent = "1";
-  if (account) {
-    checkAcc();
-  } else {
-    // console.log("no account");
-    buttonConnect.classList.remove("connected");
-    buttonConnect.textContent = "Connect Wallet";
-    // button that appears in a tablet/phone querie
-    btnConnectSmall.textContent = `${account.slice(0, 6)}...${account.slice(
-      -4
-    )}`;
-    btnConnectSmall.classList.add("connected");
-  }
-  window.location.reload();
-});
-
-const postMint = function (r) {
-  // console.log(r);
-  let status = r.status;
-  let hash = r.transactionHash;
-  // postMint(status, hash);
-
-  gifLoadingMint.classList.add("hidden");
-  notifHash.setAttribute("href", `https://etherscan.io/tx/${hash}`);
-  notifHash.classList.remove("hidden");
-  if (status == true) {
-    // success
-    warningEl.classList.remove("hidden");
-    // console.log(`true?: ${status}`);
-    notifText.textContent = "Mint successful!";
-    // pendingMintNotif.style.background =
-    //   "linear-gradient(to bottom right, #00ff73, #009f03)";
-    clearInterval(updDataInterval);
-    setMaxMint();
-    displayPrice();
-    setTimeout(updDataInterval, 120 * 1000);
-  }
-  setTimeout(function () {
-    pendingMintNotif.style.opacity = 0;
-    notifHash.classList.add("hidden");
-    gifLoadingMint.classList.remove("hidden");
-    notifText.textContent = "Mint TX sent!";
-    // pendingMintNotif.style.background =
-    //   "linear-gradient(to bottom right, #fca519, #f05c00);";
-  }, 10000);
-};
-
-const catchPostMint = function (err) {
-  console.error(err);
-  // console.log(err.message);
-  if (err.message.includes("Transaction has been reverted by the EVM")) {
-    const errorObj = JSON.parse(err.message.slice(err.message.indexOf("{")));
-    // console.log(errorObj);
-    if (errorObj.status == false) {
-      // failed
-      notifHash.setAttribute(
-        "href",
-        `https://etherscan.io/tx/${errorObj.transactionHash}`
-      );
-      notifHash.classList.remove("hidden");
-      // console.log(`false?: ${errorObj.status}`);
-      notifText.textContent = "Mint failed!";
-      // pendingMintNotif.style.background =
-      //   "linear-gradient(to bottom right, #fc1919, #680808);";
-      setTimeout(function () {
-        pendingMintNotif.style.opacity = 0;
-        notifHash.classList.add("hidden");
-        gifLoadingMint.classList.remove("hidden");
-        notifText.textContent = "Mint TX sent!";
-        // pendingMintNotif.style.background =
-        //   "linear-gradient(to bottom right, #fca519, #f05c00);";
-      }, 10000);
-    }
-  } else {
-    pendingMintNotif.style.opacity = 0;
-  }
-};
-
 // listener for mint button to send TX
 mintButton.addEventListener("click", async function () {
   const price = await displayPrice();
@@ -22890,40 +22897,6 @@ mintButton.addEventListener("click", async function () {
         catchPostMint(err);
       });
   }
-});
-
-copyProofBtn.addEventListener("click", function () {
-  navigator.clipboard.writeText(proofCopy);
-  proofEl.textContent = "Copied!";
-  setTimeout(function () {
-    proofEl.textContent = proofDisplayedInput;
-  }, 5000);
-});
-
-getProofBtn.addEventListener("click", function () {
-  const inputAddress = proofAddressInput.value.toLowerCase();
-  let proofInput;
-  let proofPaidInput;
-
-  if (freeWlAddresses.includes(inputAddress)) {
-    proofInput = getMerkleProof(inputAddress, merkleTree);
-    // console.log(`proof home: ${proofInput}`);
-    proofDisplayedInput = proofInput[0];
-    congratEl.textContent = "Congrats! You are on the free WL!";
-    congratEl.style.color = "green";
-  } else if (paidWlAddresses.includes(inputAddress)) {
-    proofPaidInput = getMerkleProof(inputAddress, merkleTree2);
-    // console.log(`proofPaid home: ${proofPaidInput}`);
-    proofDisplayedInput = proofPaidInput[0];
-    congratEl.textContent = "Congrats! You are on the paid WL!";
-    congratEl.style.color = "green";
-  } else {
-    proofDisplayedInput = "No proof!";
-    congratEl.textContent = "Sorry! You are not whitelisted";
-    congratEl.style.color = "red";
-  }
-  proofCopy = `${proofInput ? proofInput.join(",") : proofPaidInput.join(",")}`;
-  proofEl.textContent = proofDisplayedInput;
 });
 
 ////////////////////////////////////////////

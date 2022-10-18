@@ -189,10 +189,10 @@ const checkAndSwitch = async () => {
 const checkAcc = async () => {
   // window.web3 = new Web3(window.ethereum);
   account = (await web3.eth.getAccounts())[0];
-  account = account.toLowerCase();
   // console.log(`Account connected: ${account}`);
   // if there is an account connected
   if (account != undefined) {
+    account = account.toLowerCase();
     // checks for network and switches if needed
     await checkAndSwitch();
     buttonConnect.textContent = `${account.slice(0, 6)}...${account.slice(-4)}`;
